@@ -18,20 +18,14 @@ class depthAction(object):
             auto_start = False)
         self._ds.start()
 
-    def pressure_cb(data):
+    def pressure_cb(self, data):
         self._pressure = data.pressure
 
     def depthCallback(self, goal):
-        r = rospy.Rate(1)
+        r = rospy.Rate(10)
         success = True
 
-        self._feedback.depth_error = _pressure - goal.depth_setpoint
-        rospy.loginfo('%s : Going to Pressure %f with current Pressure : %f',\
-            self._da , \
-            goal.depth_setpoint, \
-            _feedback.depth_error)
-
-        while(goal.depth_setpoint != _pressure):
+        while(goal.depth_setpoint != self._pressure):
             if self._ds.is_preempt_requested():
                 rospy.loginfo('%s : Preempted' % self._da)
                 self._ds.set_preempted()
@@ -39,6 +33,11 @@ class depthAction(object):
                 break
             self._feedback.depth_error = self._pressure
             self._ds.publish_feedback(self._feedback)
+            self._feedback.depth_error = self._pressure - goal.depth_setpoint
+            rospy.loginfo('%s : Going to Pressure %f with current Pressure : %f',\
+                self._da , \
+                goal.depth_setpoint, \
+                self._feedback.depth_error)
             r.sleep()
 
         if success:
