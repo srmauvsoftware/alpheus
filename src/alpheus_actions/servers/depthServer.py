@@ -34,7 +34,7 @@ class depthAction(object):
             self._feedback.depth_error = self._pressure
             self._ds.publish_feedback(self._feedback)
             self._feedback.depth_error = self._pressure - goal.depth_setpoint
-            rospy.loginfo('%s : Going to Pressure %f with current Pressure : %f',\
+            rospy.loginfo('%s : Going to Pressure %f with Error : %f',\
                 self._da , \
                 goal.depth_setpoint, \
                 self._feedback.depth_error)
