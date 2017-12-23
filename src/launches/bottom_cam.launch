@@ -1,0 +1,13 @@
+<launch>
+	<arg name="camera" default="bottom_usb_cam" />
+	
+    <node name="uvc_bottom_camera" pkg="uvc_camera" type="uvc_camera_node" output="screen" ns="sedna/camera/bottom">
+   
+        <param name="device" value="/dev/video0" />
+        <param name="width" value="320" />
+        <param name="height" value="240" />
+        <param name="fps" value="30" />
+        <param name="topic" type="string" value="image_bottom_raw" />
+    </node>
+   
+</launch>
