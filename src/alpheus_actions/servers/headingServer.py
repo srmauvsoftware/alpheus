@@ -51,6 +51,6 @@ class headingAction(object):
 
 
 if __name__ == '__main__':
-    rospy.init_node('headingSever')
+    rospy.init_node('headingServer')
     server = headingAction(rospy.get_name())
     rospy.spin()

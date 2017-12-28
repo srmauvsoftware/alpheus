@@ -15,6 +15,8 @@ from UIs.TelemetryUI.angularVelocityUI import angularVelocityUI
 from UIs.TelemetryUI.linearAccelerationUI import linearAccelerationUI
 from UIs.TelemetryUI.pidUI import pidUI
 from UIs.TelemetryUI.pressureUI import pressureUI
+from UIs.ControllerUI.depthActionUI import depthActionUI
+from UIs.ControllerUI.headingActionUI import headingActionUI
 
 class gui:
     def __init__(self, master):
@@ -34,7 +36,11 @@ class gui:
 
         frameControl = ttk.Frame(nb)
         nb.add(frameControl,text="Controller")
-        
+        depthActionUI(master, frameControl)
+        headingActionUI(master, frameControl)
+
+        '''
+
 
         frameAtt1 = Frame(frameControl, bg='white')
         frameAtt1.grid(row=0, column=0,sticky=N,padx=15,pady=15)
@@ -76,7 +82,7 @@ class gui:
         xinput.grid(row=1,column=2)
         yinput.grid(row=2,column=2)
         groupAtt4.pack()
-
+        '''
 
 if __name__ == '__main__':
     rospy.init_node('gui', anonymous=True)
