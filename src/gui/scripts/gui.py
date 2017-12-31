@@ -17,6 +17,7 @@ from UIs.TelemetryUI.pidUI import pidUI
 from UIs.TelemetryUI.pressureUI import pressureUI
 from UIs.ControllerUI.depthActionUI import depthActionUI
 from UIs.ControllerUI.headingActionUI import headingActionUI
+from UIs.VisionUI.videoUI import videoUI
 
 class gui:
     def __init__(self, master):
@@ -38,6 +39,10 @@ class gui:
         nb.add(frameControl,text="Controller")
         depthActionUI(master, frameControl)
         headingActionUI(master, frameControl)
+
+        frameVideo = ttk.Frame(nb)
+        nb.add(frameVideo, text="Image Processing")
+        videoUI(frameVideo)
 
         '''
 

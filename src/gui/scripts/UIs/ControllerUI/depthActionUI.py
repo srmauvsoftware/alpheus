@@ -32,10 +32,10 @@ class depthActionUI:
         g.pack()
         g1.pack()
 
-
     def goDepth(self):
         t = threading.Thread(target=self.goDepthThreaded)
         t.start()
+
 
     def goDepthThreaded(self):
         client = actionlib.SimpleActionClient('depthServer', depthAction)
