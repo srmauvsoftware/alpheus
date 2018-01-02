@@ -17,7 +17,8 @@ from UIs.TelemetryUI.pidUI import pidUI
 from UIs.TelemetryUI.pressureUI import pressureUI
 from UIs.ControllerUI.depthActionUI import depthActionUI
 from UIs.ControllerUI.headingActionUI import headingActionUI
-from UIs.VisionUI.videoUI import videoUI
+from UIs.VisionUI.frontCamUI import frontCamUI
+from UIs.VisionUI.bottomCamUI import bottomCamUI
 
 class gui:
     def __init__(self, master):
@@ -40,9 +41,13 @@ class gui:
         depthActionUI(master, frameControl)
         headingActionUI(master, frameControl)
 
-        frameVideo = ttk.Frame(nb)
-        nb.add(frameVideo, text="Image Processing")
-        videoUI(frameVideo)
+        frameVideoFront = ttk.Frame(nb)
+        nb.add(frameVideoFront, text="Front Camera")
+        frontCamUI(frameVideoFront)
+
+        frameVideoBottom = ttk.Frame(nb)
+        nb.add(frameVideoBottom, text="Bottom Camera")
+        bottomCamUI(frameVideoBottom)
 
         '''
 

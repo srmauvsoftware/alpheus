@@ -8,30 +8,55 @@ from std_msgs.msg import String
 from sensor_msgs.msg import Image, CompressedImage
 from alpheus_msgs.msg import *
 from cv_bridge import CvBridge, CvBridgeError
+from dynamic_reconfigure.server import Server
+from vision.cfg import hsvConfig
 
 class Gate:
     def __init__(self):
-        self.imageSub = rospy.Subscriber("/alpheus/camera/front/image_raw", Image, self.callback)
+        self.imageSub = rospy.Subscriber("/alpheus_cam/front/image_raw", Image, self.img_cb)
+        srv = Server(hsvConfig, self.dyn_cb)
         self.bridge = CvBridge()
         self.offsetData = offsetData()
-        self.imagePub = rospy.Publisher("/front_cam", Image , queue_size=2)
+        self.imagePub = rospy.Publisher("/front/gate", Image , queue_size=2)
         self.offsetPub = rospy.Publisher("/offsetData", offsetData, queue_size=2)
-        self.r_hmin = rospy.get_param("/gateData/r_hmin")
-        self.r_smin = rospy.get_param("/gateData/r_smin")
-        self.r_vmin = rospy.get_param("/gateData/r_vmin")
-        self.r_hmax = rospy.get_param("/gateData/r_hmax")
-        self.r_smax = rospy.get_param("/gateData/r_smax")
-        self.r_vmax = rospy.get_param("/gateData/r_vmax")
-        self.g_hmin = rospy.get_param("/gateData/g_hmin")
-        self.g_smin = rospy.get_param("/gateData/g_smin")
-        self.g_vmin = rospy.get_param("/gateData/g_vmin")
-        self.g_hmax = rospy.get_param("/gateData/g_hmax")
-        self.g_smax = rospy.get_param("/gateData/g_smax")
-        self.g_vmax = rospy.get_param("/gateData/g_vmax")
-        self.erosion = rospy.get_param("/gateData/erosion")
-        self.dilation = rospy.get_param("gateData/dilation")
+        self.erosion = None
+        self.dilation = None
         self.cameraX = 640 / 2
         self.cameraY = 320 / 2
+        self.r_hmin = 0
+        self.r_smin = 0
+        self.r_vmin = 0
+        self.r_hmax = 0
+        self.r_smax = 0
+        self.r_vmax = 0
+        self.g_hmin = 0
+        self.g_smin = 0
+        self.g_vmin = 0
+        self.g_hmax = 0
+        self.g_smax = 0
+        self.g_vmax = 0
+
+    def dyn_cb(self, config, level):
+        rospy.loginfo("Dynamic Reconfigure Started For HSV Values")
+        rgb = config["rgb"]
+        print(config)
+        if(rgb == 1):
+            self.r_hmin = config["h_min"]
+            self.r_smin = config["s_min"]
+            self.r_vmin = config["v_min"]
+            self.r_hmax = config["h_max"]
+            self.r_smax = config["s_max"]
+            self.r_vmax = config["v_max"]
+
+        if(rgb == 2):
+            self.g_hmin = config["h_min"]
+            self.g_smin = config["s_min"]
+            self.g_vmin = config["v_min"]
+            self.g_hmax = config["h_max"]
+            self.g_smax = config["s_max"]
+            self.g_vmax = config["v_max"]
+
+        return config
 
     def filter_image(self, cv_image):
         channels = cv2.split(cv_image)
@@ -61,7 +86,7 @@ class Gate:
             offsetY = y - self.cameraY
         return offsetX, offsetY
 
-    def callback(self, data):
+    def img_cb(self, data):
         try:
             cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
         except CvBridgeError as e:
@@ -77,7 +102,7 @@ class Gate:
         maskRed = cv2.inRange(hsvRed, lowerRed, upperRed)
         maskGreen = cv2.inRange(hsvGreen, lowerGreen, upperGreen)
 
-        if(self.erosion != 0 and self.dilation != 0):
+        if(self.erosion and self.dilation):
             erodeKernel = cv2.getStructuringElement(cv2.MORPH_RECT, ksize=(self.erosion, self.erosion))
             dilateKernel = cv2.getStructuringElement(cv2.MORPH_RECT,ksize=(self.dilation,self.dilation))
             cv2.erode(maskRed, erodeKernel, maskRed)
@@ -85,8 +110,8 @@ class Gate:
             cv2.dilate(maskRed, dilateKernel, maskRed)
             cv2.dilate(maskGreen, dilateKernel, maskGreen)
 
-        contoursRed = cv2.findContours(maskRed, cv2.RETR_EXTERNAL, CV2.CHAIN_APPROX_SIMPLE)[1]
-        contoursGreen = cv2.findContours(maskGreen, cv2.RETR_EXTERNAL, CV2.CHAIN_APPROX_SIMPLE)[1]
+        contoursRed = cv2.findContours(maskRed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
+        contoursGreen = cv2.findContours(maskGreen, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
         itr = -1
         a = 0
         self.offsetData.offsetX = 0
@@ -119,7 +144,7 @@ class Gate:
 def main(args):
     rospy.init_node('FrontCamVision')
     ic = Gate()
-    rate = rospy.Rate(10)
+    rate = rospy.Rate(1)
     try:
         rospy.spin()
         rate.sleep()
