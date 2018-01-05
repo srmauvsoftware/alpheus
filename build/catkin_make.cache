@@ -1,0 +1,2 @@
+SpartonCompassIMU:alpheus_actions:alpheus_msgs:control:gui:launch:mission_planner:rosserial/rosserial:rosserial/rosserial_arduino:rosserial/rosserial_client:rosserial/rosserial_embeddedlinux:rosserial/rosserial_msgs:rosserial/rosserial_python:rosserial/rosserial_server:rosserial/rosserial_windows:rosserial/rosserial_xbee:teleop:tests:vision
+-DCATKIN_DEVEL_PREFIX=/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/devel -DCMAKE_INSTALL_PREFIX=/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/install -G Unix Makefiles

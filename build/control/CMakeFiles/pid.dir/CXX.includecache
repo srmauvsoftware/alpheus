@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/src/control/include/control/pid.h
+
+/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/src/control/src/pid.cpp
+iostream
+-
+cmath
+-
+pid.h
+/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/src/control/src/pid.h
+

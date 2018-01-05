@@ -13,7 +13,7 @@ from sensor_msgs.msg import Imu
 
 class orientationUI:
     def __init__(self, frameTele):
-        rospy.Subscriber('/imu_data', Imu, self.imu_callback)
+        rospy.Subscriber('/imu/data', Imu, self.imu_callback)
         #Orientation
         frameOrientation = Frame(frameTele , bg='white')
         frameOrientation.grid(row=1, column=0,sticky=W,padx=15,pady=15)

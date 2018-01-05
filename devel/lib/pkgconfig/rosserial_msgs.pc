@@ -1,0 +1,8 @@
+prefix=/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/devel
+
+Name: rosserial_msgs
+Description: Description of rosserial_msgs
+Version: 0.6.4
+Cflags: -I/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/devel/include
+Libs: -L/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/devel/lib 
+Requires: message_runtime

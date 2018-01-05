@@ -1,0 +1,2 @@
+set(alpheus_msgs_MESSAGE_FILES "/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/src/alpheus_msgs/msg/thruster.msg;/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/src/alpheus_msgs/msg/pressure.msg;/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/src/alpheus_msgs/msg/offsetData.msg;/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/src/alpheus_msgs/msg/headingPID.msg;/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/src/alpheus_msgs/msg/pressurePID.msg")
+set(alpheus_msgs_SERVICE_FILES "")

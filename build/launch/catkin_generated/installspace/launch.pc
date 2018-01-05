@@ -1,0 +1,8 @@
+prefix=/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/install
+
+Name: launch
+Description: Description of launch
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/install/lib 
+Requires: 

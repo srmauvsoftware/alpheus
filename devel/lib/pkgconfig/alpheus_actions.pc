@@ -1,0 +1,8 @@
+prefix=/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/devel
+
+Name: alpheus_actions
+Description: Description of alpheus_actions
+Version: 0.0.0
+Cflags: -I/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/devel/include
+Libs: -L/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/devel/lib 
+Requires: actionlib_msgs alpheus_msgs rospy std_msgs
