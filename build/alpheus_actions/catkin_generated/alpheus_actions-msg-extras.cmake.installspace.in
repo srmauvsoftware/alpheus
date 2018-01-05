@@ -1,2 +1,0 @@
-set(alpheus_actions_MESSAGE_FILES "msg/depthAction.msg;msg/depthActionGoal.msg;msg/depthActionResult.msg;msg/depthActionFeedback.msg;msg/depthGoal.msg;msg/depthResult.msg;msg/depthFeedback.msg;msg/headingAction.msg;msg/headingActionGoal.msg;msg/headingActionResult.msg;msg/headingActionFeedback.msg;msg/headingGoal.msg;msg/headingResult.msg;msg/headingFeedback.msg")
-set(alpheus_actions_SERVICE_FILES "")

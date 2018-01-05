@@ -1,8 +1,0 @@
-prefix=/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/devel
-
-Name: alpheus_msgs
-Description: Description of alpheus_msgs
-Version: 0.0.0
-Cflags: -I/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/devel/include
-Libs: -L/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/devel/lib 
-Requires: message_runtime

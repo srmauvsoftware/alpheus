@@ -1,8 +1,0 @@
-prefix=/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/devel
-
-Name: rosserial_arduino
-Description: Description of rosserial_arduino
-Version: 0.6.4
-Cflags: -I/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/devel/include
-Libs: -L/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/devel/lib 
-Requires: message_runtime

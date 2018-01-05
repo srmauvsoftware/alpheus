@@ -1,8 +1,0 @@
-prefix=/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/devel
-
-Name: gui
-Description: Description of gui
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/devel/lib 
-Requires: 

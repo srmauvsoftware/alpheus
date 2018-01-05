@@ -1,8 +1,0 @@
-prefix=/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/install
-
-Name: rosserial_server
-Description: Description of rosserial_server
-Version: 0.6.4
-Cflags: -I/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/install/include -I/usr/include
-Libs: -L/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/install/lib 
-Requires: roscpp rosserial_msgs topic_tools

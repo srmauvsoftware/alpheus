@@ -1,8 +1,0 @@
-prefix=/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/install
-
-Name: rosserial_embeddedlinux
-Description: Description of rosserial_embeddedlinux
-Version: 0.6.4
-Cflags: 
-Libs: -L/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/install/lib 
-Requires: 

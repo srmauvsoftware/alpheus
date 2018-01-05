@@ -1,8 +1,0 @@
-prefix=/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/install
-
-Name: SpartonCompassIMU
-Description: Description of SpartonCompassIMU
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/install/lib 
-Requires: 

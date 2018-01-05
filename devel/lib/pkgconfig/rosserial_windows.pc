@@ -1,8 +1,0 @@
-prefix=/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/devel
-
-Name: rosserial_windows
-Description: Description of rosserial_windows
-Version: 0.6.4
-Cflags: 
-Libs: -L/home/pushkalkatara/Desktop/PUbuntu/AUV/alpheus/devel/lib 
-Requires: 
