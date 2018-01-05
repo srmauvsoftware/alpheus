@@ -38,9 +38,8 @@ class Gate:
 
     def dyn_cb(self, config, level):
         rospy.loginfo("Dynamic Reconfigure Started For HSV Values")
-        rgb = config["rgb"]
-        print(config)
-        if(rgb == 1):
+        self.rgb = config["rgb"]
+        if(self.rgb == 1):
             self.r_hmin = config["h_min"]
             self.r_smin = config["s_min"]
             self.r_vmin = config["v_min"]
@@ -48,14 +47,13 @@ class Gate:
             self.r_smax = config["s_max"]
             self.r_vmax = config["v_max"]
 
-        if(rgb == 2):
+        if(self.rgb == 2):
             self.g_hmin = config["h_min"]
             self.g_smin = config["s_min"]
             self.g_vmin = config["v_min"]
             self.g_hmax = config["h_max"]
             self.g_smax = config["s_max"]
             self.g_vmax = config["v_max"]
-
         return config
 
     def filter_image(self, cv_image):
@@ -92,6 +90,11 @@ class Gate:
         except CvBridgeError as e:
             print(e)
 
+        print(self.rgb)
+        print(self.r_hmin, self.r_smin, self.r_vmin)
+        print(self.r_hmax, self.r_smax, self.r_vmax)
+        print(self.g_hmin, self.g_smin, self.g_vmin)
+        print(self.g_hmax, self.g_smax, self.g_vmax)
         lowerRed = np.array([ self.r_hmin, self.r_smin , self.r_vmin ])
         upperRed = np.array([ self.r_hmax, self.r_smax, self.r_vmax ])
         lowerGreen = np.array([ self.g_hmin, self.g_smin, self.g_vmin ])
@@ -116,7 +119,7 @@ class Gate:
         a = 0
         self.offsetData.offsetX = 0
         self.offsetData.offsetY = 0
-        if not contours:
+        if not contoursRed or contoursGreen:
             print("No Contours Found")
         else:
             pipeRed = self.largestContour(contoursRed)
@@ -137,7 +140,7 @@ class Gate:
             gateCenter = findOffsets(gateCenter)
             self.offsetData.offsetX = gateCenter[0]
             self.offsetData.offsetY = gateCenter[1]
-
+            
             self.imagePub.publish(self.bridge.cv2_to_imgmsg(cv_image), "bgr8")
             self.offsetPub.publish(self.offsetData)
 

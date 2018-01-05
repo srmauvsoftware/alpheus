@@ -38,8 +38,8 @@ class gui:
 
         frameControl = ttk.Frame(nb)
         nb.add(frameControl,text="Controller")
-        depthActionUI(master, frameControl)
-        headingActionUI(master, frameControl)
+        depthActionUI(frameControl)
+        headingActionUI(frameControl)
 
         frameVideoFront = ttk.Frame(nb)
         nb.add(frameVideoFront, text="Front Camera")

@@ -14,8 +14,7 @@ from alpheus_actions.msg import depthGoal, depthAction
 import threading
 
 class depthActionUI:
-    def __init__(self, root, frameControl):
-        self.root = root
+    def __init__(self, frameControl):
         f = Frame(frameControl, bg='white')
         f.grid(row=0, column=0, sticky=N, padx = 15, pady = 15)
         g = LabelFrame(f, text="Depth Action", font="Times")

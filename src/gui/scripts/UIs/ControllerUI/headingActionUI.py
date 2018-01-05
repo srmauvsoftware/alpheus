@@ -14,8 +14,7 @@ from alpheus_actions.msg import headingGoal, headingAction
 import threading
 
 class headingActionUI:
-    def __init__(self, root, frameControl):
-        self.root = root
+    def __init__(self, frameControl):
         f = Frame(frameControl, bg='white')
         f.grid(row=0, column=1, sticky=N, padx = 15, pady = 15)
         g = LabelFrame(f, text="Heading Action", font="Times")
