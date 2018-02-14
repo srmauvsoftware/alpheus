@@ -41,9 +41,9 @@ class gui:
         depthActionUI(frameControl)
         headingActionUI(frameControl)
 
-        #frameVideoFront = ttk.Frame(nb)
-        #nb.add(frameVideoFront, text="Front Camera")
-        #frontCamUI(frameVideoFront)
+        frameVideoFront = ttk.Frame(nb)
+        nb.add(frameVideoFront, text="Front Camera")
+        frontCamUI(frameVideoFront)
 
         frameVideoBottom = ttk.Frame(nb)
         nb.add(frameVideoBottom, text="Bottom Camera")
