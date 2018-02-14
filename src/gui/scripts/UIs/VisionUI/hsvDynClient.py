@@ -51,7 +51,7 @@ class hsvDynClient:
         def callback(config):
             return config
         client = dynamic_reconfigure.client.Client("FrontCamVision", timeout=30, config_callback=callback)
-        while True:
+        while True: # Replace with while Tkinter Loop is running
             time.sleep(1)
             client.update_configuration({
                 "rgb": self.v.get(),
