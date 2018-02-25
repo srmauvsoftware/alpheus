@@ -8,7 +8,7 @@ def headingClient():
     client = actionlib.SimpleActionClient('headingServer', \
     alpheus_actions.msg.headingAction)
     client.wait_for_server()
-    goal = alpheus_actions.msg.headingGoal(heading_setpoint=30)
+    goal = alpheus_actions.msg.headingGoal(heading_setpoint=100)
     client.send_goal(goal)
     client.wait_for_result()
     return client.get_result()

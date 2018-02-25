@@ -36,7 +36,7 @@ class headingAction(object):
                 break
             self._feedback.heading_error = self.heading_value
             self._hs.publish_feedback(self._feedback)
-            self._feedback.heading_error = self._heading_value - goal.heading_setpoint
+            self._feedback.heading_error = self.heading_value - goal.heading_setpoint
             rospy.loginfo('%s : Going to Heading %f with Error : %f',\
                 self._ha, \
                 goal.heading_setpoint, \
@@ -47,7 +47,7 @@ class headingAction(object):
         if success:
             self._result.heading_final = self._feedback.heading_error
             rospy.loginfo('%s : Success' % self._ha)
-            self._ds.set_succeeded(self._result)
+            self._hs.set_succeeded(self._result)
 
 
 if __name__ == '__main__':
