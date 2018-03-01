@@ -10,14 +10,22 @@ from alpheus_msgs.msg import *
 from cv_bridge import CvBridge, CvBridgeError
 from dynamic_reconfigure.server import Server
 from vision.cfg import hsvConfig
+import rostopic
 
 class Gate:
     def __init__(self):
-        self.imageSub = rospy.Subscriber("/alpheus_cam/front/image_raw", Image, self.img_cb)
+        self.img_type = rostopic.get_topic_type('/image/compressed')
+        print(self.img_type[0])
+        if self.img_type[0] == 'sensor_msgs/CompressedImage':
+            self.imageSub = rospy.Subscriber("/image/compressed", CompressedImage, self.img_cb)
+
+        elif self.img_type[0] == 'sensor_msgs/Image':
+            self.imageSub = rospy.Subscriber("/alpheus_cam/front/image_raw", Image, self.img_cb)
+
         srv = Server(hsvConfig, self.dyn_cb)
         self.bridge = CvBridge()
         self.offsetData = offsetData()
-        self.imagePub = rospy.Publisher("/front/gate", Image , queue_size=2)
+        self.imagePub = rospy.Publisher("/front/gate", CompressedImage , queue_size=2)
         self.offsetPub = rospy.Publisher("/offsetData", offsetData, queue_size=2)
         self.erosion = None
         self.dilation = None
@@ -63,10 +71,12 @@ class Gate:
         return cv2.merge(channels, cv_image)
 
     def largestContour(self, contours):
+        areaArray = []
         for i, c in enumerate(contours):
             area = cv2.contourArea(c)
-            areaArray = append(area)
+            areaArray.append(area)
         sorteddata = sorted(zip(areaArray, contours), key = lambda x: x[0], reverse=True)
+        print(sorteddata[0][1])
         return sorteddata[0][1]
 
     def findOffsets(self, x, y):
@@ -85,23 +95,33 @@ class Gate:
         return offsetX, offsetY
 
     def img_cb(self, data):
-        try:
-            cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-        except CvBridgeError as e:
-            print(e)
+        if self.img_type[0] == 'sensor_msgs/CompressedImage':
+            try:
+                np_arr = np.fromstring(data.data, np.uint8)
+                cv_image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+            except CvBridgeError as e:
+                print(e)
+
+        elif self.img_type[0] == 'sensor_msgs/Image':
+            try:
+                cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+            except CvBridgeError as e:
+                print(e)
 
         print(self.rgb)
         print(self.r_hmin, self.r_smin, self.r_vmin)
         print(self.r_hmax, self.r_smax, self.r_vmax)
         print(self.g_hmin, self.g_smin, self.g_vmin)
         print(self.g_hmax, self.g_smax, self.g_vmax)
-        lowerRed = np.array([ self.r_hmin, self.r_smin , self.r_vmin ])
-        upperRed = np.array([ self.r_hmax, self.r_smax, self.r_vmax ])
-        lowerGreen = np.array([ self.g_hmin, self.g_smin, self.g_vmin ])
-        upperGreen = np.array([ self.g_hmax, self.g_smax, self.g_vmax ])
+        lowerRed = np.array([ self.r_hmin, self.r_smin , self.r_vmin ], dtype=np.uint8)
+        upperRed = np.array([ self.r_hmax, self.r_smax, self.r_vmax ], dtype=np.uint8)
+        lowerGreen = np.array([ self.g_hmin, self.g_smin, self.g_vmin ], dtype=np.uint8)
+        upperGreen = np.array([ self.g_hmax, self.g_smax, self.g_vmax ], dtype=np.uint8)
 
-        hsvRed = cv2.cvtColor(self.filter_image(cv_image), cv2.COLOR_BGR2HSV)
-        hsvGreen = cv2.cvtColor(self.filter_image(cv_image), cv2.COLOR_BGR2HSV)
+        #hsvRed = cv2.cvtColor(self.filter_image(cv_image), cv2.COLOR_BGR2HSV)
+        #hsvGreen = cv2.cvtColor(self.filter_image(cv_image), cv2.COLOR_BGR2HSV)
+        hsvRed = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
+        hsvGreen = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
         maskRed = cv2.inRange(hsvRed, lowerRed, upperRed)
         maskGreen = cv2.inRange(hsvGreen, lowerGreen, upperGreen)
 
@@ -122,27 +142,36 @@ class Gate:
         if not contoursRed or contoursGreen:
             print("No Contours Found")
         else:
-            pipeRed = self.largestContour(contoursRed)
-            pipeGreen = self.largestContour(contoursGreen)
-            Rx, Ry, Rh, Rw = cv2.boundingRect(pipeRed)
-            Gx, Gy, Gh, Gw = cv2.boundingRect(pipeGreen)
-            redCenter = ( Rx + (Rw / 2) , Ry + (Rh / 2) )
-            greenCenter = ( Gx + (Gw / 2) , Gy + (Gh / 2) )
-            cv2.circle(cv_image, redCenter, 3, (255,0,0), -1)
-            cv2.rectangle(cv_image, (Rx, Ry), (Rx + Rw, Ry + Rh), (255, 0, 0), 2)
-            cv2.circle(cv_image, greenCenter, 3, (0,255,0), -1)
-            cv2.rectangle(cv_image, (Gx, Gy), (Gx + Gw, Gy + Gh), (0, 255, 0), 2)
-            cv2.circle(cv_image, (cameraX, cameraY), 3, (255, 255, 255), -1)	#draw center
-            cv2.line(cv_image, (Rx+(Rw/2), Ry+(Rh/2)),(cameraX, cameraY),(255, 0, 0),3)
-            cv2.line(cv_image, (Gx+(Gw/2), Gy+(Gh/2)),(cameraX, cameraY),(0, 255, 0),3)
+            cv2.circle(cv_image, (self.cameraX, self.cameraY), 3, (255, 255, 255), -1)
+            if(self.rgb == 1):
+                pipeRed = self.largestContour(contoursRed)
+                Rx, Ry, Rh, Rw = cv2.boundingRect(pipeRed)
+                redCenter = ( Rx + (Rw / 2) , Ry + (Rh / 2) )
+                cv2.circle(cv_image, redCenter, 3, (255,0,0), -1)
+                cv2.rectangle(cv_image, (Rx, Ry), (Rx + Rw, Ry + Rh), (255, 0, 0), 2)
+                cv2.line(cv_image, (Rx+(Rw/2), Ry+(Rh/2)),(self.cameraX, self.cameraY),(255, 0, 0),3)
 
-            gateCenter = ( (redCenter[0] + greenCenter[0]) / 2 , (redCenter[1] + redCenter[1]) / 2 )
-            gateCenter = findOffsets(gateCenter)
-            self.offsetData.offsetX = gateCenter[0]
-            self.offsetData.offsetY = gateCenter[1]
-            
-            self.imagePub.publish(self.bridge.cv2_to_imgmsg(cv_image), "bgr8")
-            self.offsetPub.publish(self.offsetData)
+            if(self.rgb == 2):
+                pipeGreen = self.largestContour(contoursGreen)
+                Gx, Gy, Gh, Gw = cv2.boundingRect(pipeGreen)
+                greenCenter = ( Gx + (Gw / 2) , Gy + (Gh / 2) )
+                cv2.circle(cv_image, greenCenter, 3, (0,255,0), -1)
+                cv2.rectangle(cv_image, (Gx, Gy), (Gx + Gw, Gy + Gh), (0, 255, 0), 2)
+                cv2.line(cv_image, (Gx+(Gw/2), Gy+(Gh/2)),(self.cameraX, self.cameraY),(0, 255, 0),3)
+
+            #if(redCenter and greenCenter):
+            #    gateCenter = ( (redCenter[0] + greenCenter[0]) / 2 , (redCenter[1] + redCenter[1]) / 2 )
+        #        gateCenter = findOffsets(gateCenter)
+            #    self.offsetData.offsetX = gateCenter[0]
+        #        self.offsetData.offsetY = gateCenter[1]
+
+            #self.imagePub.publish(self.bridge.cv2_to_imgmsg(cv_image), "bgr8")
+        msg = CompressedImage()
+        msg.header.stamp = rospy.Time.now()
+        msg.format = "jpeg"
+        msg.data = np.array(cv2.imencode('.jpg', cv_image)[1]).tostring()
+        self.imagePub.publish(msg)
+        self.offsetPub.publish(self.offsetData)
 
 def main(args):
     rospy.init_node('FrontCamVision')
