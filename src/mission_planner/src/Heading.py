@@ -12,14 +12,14 @@ from smach_ros import SimpleActionState
 import time
 
 class Heading():
-    def __init__(self, smach_StateMachine, HEADING):
+    def __init__(self, smach_StateMachine, HEADING, TASK):
         self.HEADING = HEADING
-        smach_StateMachine.add('GOTO_HEADING', \
+        smach_StateMachine.add('HEADING', \
                                 SimpleActionState('headingServer', \
                                 headingAction, \
                                 goal_cb=self.headingCallback), \
-                                transitions={'succeeded':'mission_complete',\
-                                            'preempted':'not-sink',\
+                                transitions={'succeeded':TASK,\
+                                            'preempted':'HEADING',\
                                             'aborted':'not-sink'})
 
 

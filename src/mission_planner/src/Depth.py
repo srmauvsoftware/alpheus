@@ -12,14 +12,14 @@ from smach_ros import SimpleActionState
 import time
 
 class Depth():
-    def __init__(self, smach_StateMachine, PRESSURE):
+    def __init__(self, smach_StateMachine, PRESSURE, TASK):
         self.PRESSURE = PRESSURE
-        smach_StateMachine.add('GOTO_DEPTH', \
+        smach_StateMachine.add('DEPTH', \
                                 SimpleActionState('depthServer', \
                                 depthAction, \
                                 goal_cb=self.depthCallback), \
-                                transitions={'succeeded':'GOTO_HEADING',\
-                                            'preempted':'not-sink',\
+                                transitions={'succeeded':TASK,\
+                                            'preempted':'DEPTH',\
                                             'aborted':'not-sink'})
 
 

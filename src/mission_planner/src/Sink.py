@@ -11,14 +11,14 @@ from smach_ros import SimpleActionState
 import time
 
 class Sink:
-    def __init__(self,smach_StateMachine, INITIAL_PRESSURE):
+    def __init__(self,smach_StateMachine, INITIAL_PRESSURE, TASK):
         self.INITIAL_PRESSURE = INITIAL_PRESSURE
 
         smach_StateMachine.add('SINK_ALPHEUS', \
                                 SimpleActionState('depthServer', \
                                 depthAction, \
                                 goal_cb=self.sink_callback), \
-                                transitions={'succeeded':'GOTO_DEPTH',\
+                                transitions={'succeeded':TASK,\
                                             'preempted':'not-sink',\
                                             'aborted':'not-sink'})
 

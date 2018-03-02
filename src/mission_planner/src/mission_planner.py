@@ -10,19 +10,23 @@ from smach_ros import IntrospectionServer
 from Sink import Sink
 from Depth import Depth
 from Heading import Heading
+from DepthHeading import DepthHeading
 
 def main():
     rospy.init_node('mission_planner')
-    sm = smach.StateMachine(outcomes=['mission_complete', 'mission_failed', 'not-sink', 'heading_success'])
+    sm = smach.StateMachine(outcomes=['mission_complete', 'mission_failed', 'aborted'])
 
     with sm:
-        Sink(sm, 200)
-        Depth(sm, 300)
-        Heading(sm, 400)
+        Sink(sm, 200, 'DEPTH')
+        Depth(sm, 300, 'HEADING')
+        Heading(sm, 400, 'DEPTH+HEADING')
+        DepthHeading(sm, 500, 600, 'mission_complete')
+        sis = IntrospectionServer('ALPHEUS_MISSION_PLANNER', sm, '/START_ALPHEUS')
+        sis.start()
         outcome = sm.execute()
 
-    sis = IntrospectionServer('ALPHEUS_MISSION_PLANNER', sm, '/SM_ROOT')
-    sis.start()
 
+    rospy.spin()
+    sis.stop()
 if __name__ == '__main__':
     main()
