@@ -18,8 +18,8 @@ class Sink:
                                 depthAction, \
                                 goal_cb=self.sink_callback), \
                                 transitions={'succeeded':TASK,\
-                                            'preempted':'not-sink',\
-                                            'aborted':'not-sink'})
+                                            'preempted':'SINK_ALPHEUS',\
+                                            'aborted':'aborted'})
 
     def sink_callback(self, userdata, goal):
         rospy.loginfo('Executing State Sink')
