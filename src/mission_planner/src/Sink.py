@@ -13,7 +13,6 @@ import time
 class Sink:
     def __init__(self,smach_StateMachine, INITIAL_PRESSURE, TASK):
         self.INITIAL_PRESSURE = INITIAL_PRESSURE
-
         smach_StateMachine.add('SINK_ALPHEUS', \
                                 SimpleActionState('depthServer', \
                                 depthAction, \

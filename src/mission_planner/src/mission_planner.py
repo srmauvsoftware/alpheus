@@ -19,8 +19,8 @@ def main():
     with sm:
         Sink(sm, 200, 'DEPTH')
         Depth(sm, 300, 'HEADING')
-        Heading(sm, 400, 'DEPTH+HEADING')
-        DepthHeading(sm, 500, 600, 'mission_complete')
+        Heading(sm, 400, 'mission_complete')
+        #DepthHeading(sm, 500, 600, 'mission_complete')
         sis = IntrospectionServer('ALPHEUS_MISSION_PLANNER', sm, '/START_ALPHEUS')
         sis.start()
         outcome = sm.execute()
