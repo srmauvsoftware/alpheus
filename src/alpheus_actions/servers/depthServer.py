@@ -26,8 +26,8 @@ class depthAction(object):
         r = rospy.Rate(10)
         success = True
         od = offsetData()
-        od.offsetX = goal.depth_setpoint
-        od.offsetY = 0
+        od.offsetY = goal.depth_setpoint
+        od.offsetX = 0
         while(goal.depth_setpoint != self._pressure):
             self.pub.publish(od)
             if self._ds.is_preempt_requested():

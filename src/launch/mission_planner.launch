@@ -4,4 +4,5 @@
 	<node pkg="tests" type="depthTest.py" name="depthTest" output="screen"/>
 	<node pkg="tests" type="headingTest.py" name="headingTest" output="screen"/>
 	<node pkg="mission_planner" type="mission_planner.py" name="mission_planner" output="screen"/>
+	
 </launch>

@@ -81,9 +81,10 @@ void HeadingController(){
 void PressureController(){
   ros::Time t = ros::Time::now();
   double dt = (t.nsec - t_old.nsec) / 100000000;
-  PID pid = PID(dt, MAX_PRESSURE_PID, MIN_PRESSURE_PID, pKp, pKi, pKd);
+  PID pid = PID(dt, MAX_PRESSURE_PID, MIN_PRESSURE_PID, 4, 0.0005, 1);
   double output = pid.calculate(pressure_setpoint, pressure_value);
   int tVal = map(output, MIN_PRESSURE_PID, MAX_PRESSURE_PID, T200MIN, T200MAX);
+  ROS_INFO("pressure_setpoint is %f\n offsetY is %f\n output is %f\n tVal is %d",pressure_setpoint,offsetY,output,tVal);
   thruster.speedup1 = 1500 - tVal;
   thruster.speedup2 = 1500 - tVal;
   thruster.speedup3 = 1500 - tVal;
