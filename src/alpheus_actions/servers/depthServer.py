@@ -2,13 +2,14 @@
 import rospy
 import actionlib
 import alpheus_actions.msg
-from alpheus_msgs.msg import pressure
+from alpheus_msgs.msg import pressure, offsetData
 
 class depthAction(object):
     _feedback = alpheus_actions.msg.depthFeedback()
     _result = alpheus_actions.msg.depthResult()
 
     def __init__(self, name):
+        self.pub = rospy.Publisher('/offsetData', offsetData, queue_size=10)
         rospy.Subscriber("/pressure", pressure, self.pressure_cb)
         self._da = name
         self._ds = actionlib.SimpleActionServer(
@@ -24,8 +25,11 @@ class depthAction(object):
     def depthCallback(self, goal):
         r = rospy.Rate(10)
         success = True
-
+        od = offsetData()
+        od.offsetX = goal.depth_setpoint
+        od.offsetY = 0
         while(goal.depth_setpoint != self._pressure):
+            self.pub.publish(od)
             if self._ds.is_preempt_requested():
                 rospy.loginfo('%s : Preempted' % self._da)
                 self._ds.set_preempted()

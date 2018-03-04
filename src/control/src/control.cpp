@@ -50,8 +50,8 @@ void getPressure(const alpheus_msgs::pressure &pressure){
 }
 
 void getOffset(const alpheus_msgs::offsetData &offset){
-  offsetX = offset.offsetX;
-  offsetY = offset.offsetY;
+  heading_setpoint = offsetX = offset.offsetX;
+  pressure_setpoint = offsetY = offset.offsetY;
 }
 
 void getHeadingPID(const alpheus_msgs::headingPID &headingPIDdata){
@@ -92,7 +92,7 @@ void PressureController(){
 //End of Controller Functions
 
 int main(int argc, char **argv){
-  ros::init(argc, argv, "PID Controller");
+  ros::init(argc, argv, "pidcontroller");
   ros::NodeHandle nh;
   thrusterPub = nh.advertise<alpheus_msgs::thruster>("/thruster",1000);
   imuSub = nh.subscribe("/imu/HeadingTrue_degree", 1000, getHeading);
