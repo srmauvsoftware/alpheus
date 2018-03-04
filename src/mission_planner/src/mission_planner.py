@@ -17,17 +17,17 @@ def main():
     sm = smach.StateMachine(outcomes=['mission_complete', 'mission_failed', 'aborted'])
 
     with sm:
-        Sink(sm, 200, 'DEPTH')
+        Sink(sm, 5, 'DEPTH')
 
-        depthTask = Depth(sm, 300, 'HEADING')
-        depthTask.addDepthAction()
+        depthTask = Depth(100, 'HEADING')
+        depthTask.addDepthAction(sm)
 
-        headingTask = Heading(sm, 400, 'mission_complete')
-        headingTask.addHeadingAction()
+        headingTask = Heading(200, 'DEPTH+HEADING')
+        headingTask.addHeadingAction(sm)
 
-        #depthHeadingTask = DepthHeading(sm, 500, 600, 'mission_complete')
-        #depthHeadingTask.addDepthHeading()
-        #depthHeadingTask.startDepthHeading()
+        depthHeadingTask = DepthHeading(350, 350, 'mission_complete')
+        depthHeadingTask.addDepthHeading(sm)
+
         sis = IntrospectionServer('ALPHEUS_MISSION_PLANNER', sm, '/START_ALPHEUS')
         sis.start()
         outcome = sm.execute()

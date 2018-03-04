@@ -50,8 +50,8 @@ void getPressure(const alpheus_msgs::pressure &pressure){
 }
 
 void getOffset(const alpheus_msgs::offsetData &offset){
-  offsetX = offset.offsetX;
-  offsetY = offset.offsetY;
+  heading_setpoint = offsetX = offset.offsetX;
+  pressure_setpoint = offsetY = offset.offsetY;
 }
 
 void getHeadingPID(const alpheus_msgs::headingPID &headingPIDdata){

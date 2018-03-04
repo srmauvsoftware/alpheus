@@ -1,35 +1,75 @@
 #! /usr/bin/env python
 import roslib; roslib.load_manifest('mission_planner')
 import rospy
-from Depth import Depth
-from Heading import Heading
 import smach
 import smach_ros
+import actionlib
+import alpheus_actions.msg
 
-class DepthHeading(smach.State):
-    def __init__(self, smach_StateMachine, PRESSURE, HEADING, TASK):
+class Depth(smach.State):
+    def __init__(self, PRESSURE):
+        self.PRESSURE = PRESSURE
+        smach.State.__init__(self, outcomes=['DepthReached'])
+
+    def execute(self, ud):
+        rospy.loginfo("Executing State Concurrent Depth")
+        client = actionlib.SimpleActionClient('depthServer',\
+                                            alpheus_actions.msg.depthAction)
+        client.wait_for_server()
+        goal = alpheus_actions.msg.depthGoal(depth_setpoint=self.PRESSURE)
+        client.send_goal(goal)
+        client.wait_for_result()
+        result = client.get_state()
+        if result == -1:
+            return 'DepthReached'
+        elif result == 'preempted':
+            return 'aborted'
+        elif result == 'aborted':
+            return 'aborted'
+        else: return 'aborted'
+
+class Heading(smach.State):
+    def __init__(self, HEADING):
+        self.HEADING = HEADING
+        smach.State.__init__(self, outcomes=['HeadingReached'])
+
+    def execute(self, ud):
+        rospy.loginfo("Executing State Concurrent Heading")
+        client = actionlib.SimpleActionClient('headingServer',\
+                                            alpheus_actions.msg.headingAction)
+        client.wait_for_server()
+        goal = alpheus_actions.msg.headingGoal(heading_setpoint=self.HEADING)
+        client.send_goal(goal)
+        client.wait_for_result()
+        result = client.get_result()
+        print(result)
+        if result == -1:
+            return 'HeadingReached'
+        elif result == 'preempted':
+            return 'aborted'
+        elif result == 'aborted':
+            return 'aborted'
+        else: return 'aborted'
+
+class DepthHeading():
+    def __init__(self, PRESSURE, HEADING, TASK):
         self.PRESSURE = PRESSURE
         self.HEADING = HEADING
         self.TASK = TASK
-        self.sm = smach_StateMachine
-        smach.State.__init__(self, outcomes=[self.TASK])
 
-        self.sm_con = smach.Concurrence(outcomes = ['DepthHeadingReached', 'DepthHeadingFailed'],
+    def addDepthHeading(self, sm):
+        sm_con = smach.Concurrence(outcomes = ['DepthHeadingReached', 'DepthHeadingFailed'],
                                                 default_outcome='DepthHeadingFailed',
                                                 outcome_map={'DepthHeadingReached':
                                                 {'DEPTH_CONCURRENT':'DepthReached',
                                                 'HEADING_CONCURRENT':'HeadingReached'}})
-        with self.sm_con:
-            self.depthTask = Depth(self.sm_con, self.PRESSURE, 'DepthReached')
-            smach.Concurrence.add('DEPTH_CONCURRENT', self.depthTask)
-            self.headingTask = Heading(self.sm_con, self.HEADING, 'HeadingReached')
-            smach.Concurrence.add('HEADING_CONCURRENT', self.headingTask)
 
-    def addDepthHeading(self):
-        self.sm.add('DEPTH+HEADING',self.sm_con,transitions={
+        with sm_con:
+
+            smach.Concurrence.add('DEPTH_CONCURRENT', Depth(self.PRESSURE))
+            smach.Concurrence.add('HEADING_CONCURRENT', Heading(self.HEADING))
+
+
+        smach.StateMachine.add('DEPTH+HEADING', sm_con, transitions={
                                     'DepthHeadingFailed':'DEPTH+HEADING',
                                     'DepthHeadingReached':self.TASK })
-
-    def startDepthHeading(self):
-        self.headingTask.addHeadingAction(g = 'Concurrence')
-        self.depthTask.addDepthAction(g = 'Concurrence')

@@ -12,32 +12,30 @@ from smach_ros import SimpleActionState
 import time
 
 class Heading(smach.State):
-    def __init__(self, smach_StateMachine, HEADING, TASK):
+    def __init__(self, HEADING, TASK):
         self.HEADING = HEADING
         self.TASK = TASK
-        self.sm = smach_StateMachine
-        smach.State.__init__(self, outcomes=[self.TASK, 'aborted'])
+        smach.State.__init__(self, outcomes=[self.TASK])
 
 
-    def addHeadingAction(self, g=None):
-        if g is None:
-            self.sm.add('HEADING', \
-                                SimpleActionState('headingServer', \
-                                headingAction, \
-                                goal_cb=self.headingCallback), \
-                                transitions={'succeeded':self.TASK,\
-                                            'preempted':'HEADING',\
-                                            'aborted':'aborted'})
-
+    def addHeadingAction(self, sm):
+        sm.add('HEADING', \
+                        SimpleActionState('headingServer', \
+                        headingAction, \
+                        goal_cb=self.headingCallback), \
+                        transitions={'succeeded':self.TASK,\
+                                    'preempted':'HEADING',\
+                                    'aborted':'aborted'})
+        '''
         else:
-            self.sm.add('HEADING_CONCURRENT', \
+            smach.StateMachine.add('HEADING_CONCURRENT', \
                                 SimpleActionState('headingServer', \
                                 headingAction, \
                                 goal_cb=self.headingCallback), \
                                 transitions={'succeeded':self.TASK,\
                                             'preempted':'HEADING_CONCURRENT',\
                                             'aborted':'aborted'})
-
+        '''
 
 
     def headingCallback(self, userdata, goal):

@@ -12,30 +12,29 @@ from smach_ros import SimpleActionState
 import time
 
 class Depth(smach.State):
-    def __init__(self, smach_StateMachine, PRESSURE, TASK):
+    def __init__(self, PRESSURE, TASK):
         self.PRESSURE = PRESSURE
         self.TASK = TASK
-        self.sm = smach_StateMachine
-        smach.State.__init__(self, outcomes=[self.TASK, 'aborted'])
+        smach.State.__init__(self, outcomes=[self.TASK])
 
-    def addDepthAction(self, g=None):
-        if g is None:
-            self.sm.add('DEPTH', \
-                                SimpleActionState('depthServer', \
-                                depthAction, \
-                                goal_cb=self.depthCallback), \
-                                transitions={'succeeded':self.TASK,\
-                                            'preempted':'DEPTH',\
-                                            'aborted':'aborted'})
+    def addDepthAction(self, sm):
+        sm.add('DEPTH', \
+                        SimpleActionState('depthServer', \
+                        depthAction, \
+                        goal_cb=self.depthCallback), \
+                        transitions={'succeeded':self.TASK,\
+                                    'preempted':'DEPTH',\
+                                    'aborted':'aborted'})
+        '''
         else:
-            self.sm.add('DEPTH_CONCURRENT', \
+            sm.add('DEPTH_CONCURRENT', \
                                 SimpleActionState('depthServer', \
                                 depthAction, \
                                 goal_cb=self.depthCallback), \
                                 transitions={'succeeded':self.TASK,\
                                             'preempted':'DEPTH_CONCURRENT',\
                                             'aborted':'aborted'})
-
+        '''
 
 
     def depthCallback(self, userdata, goal):
