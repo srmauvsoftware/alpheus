@@ -25,19 +25,19 @@ class pressureUI:
         frameOrientation = Frame(frameTele , bg='white')
         frameOrientation.grid(row=2, column=1, sticky=W, padx=15, pady=15)
         # grouping of widgets
-        groupOrientation = LabelFrame(frameOrientation, text="Pressure",font="Times")
+        groupOrientation = LabelFrame(frameOrientation, text="PRESSURE",font="Helvetica 15 bold")
         groupOrientation.pack()
 	    # widget definitions
-        lblX = Label(groupOrientation, text="Pressure :",font="Times")
-        lblY = Label(groupOrientation, text="Depth :",font="Times")
+        lblX = Label(groupOrientation, text="Pressure :",font="Helvetica 13")
+        lblY = Label(groupOrientation, text="Depth :",font="Helvetica 13")
 	    # declare and initialize variables
         self.vX = StringVar()
         self.vX.set("0")
         self.vY = StringVar()
         self.vY.set("0")
 	    # associate variables with labels displaying data
-        self.entXData = Entry(groupOrientation, textvariable=self.vX, background="blue",font="Times")
-        self.entYData = Entry(groupOrientation, textvariable=self.vY, background="blue",font="Times")
+        self.entXData = Entry(groupOrientation, textvariable=self.vX, background="white",font="Helvetica")
+        self.entYData = Entry(groupOrientation, textvariable=self.vY, background="white",font="Helvetica")
 	    # layout widgets within group
         lblX.grid(row=0,sticky=W,padx=5,pady=5)
         lblY.grid(row=1,sticky=W,padx=5,pady=5)

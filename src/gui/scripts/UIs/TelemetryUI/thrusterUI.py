@@ -17,17 +17,17 @@ class thrusterUI:
         frameThrusterSpeed = Frame(frameTele , bg='white')
         frameThrusterSpeed.grid(row=2, column=0, rowspan=2,sticky=W,padx=15,pady=15) # columnspan?
         # grouping of widgets
-        groupThrusterSpeed = LabelFrame(frameThrusterSpeed, text="Thruster PWM" ,font="Times")
+        groupThrusterSpeed = LabelFrame(frameThrusterSpeed, text="Thruster PWM" ,font="Helvetica 15 bold")
         groupThrusterSpeed.pack()
 	    # widget definitions
-        lblThrusterSpeed1 = Label(groupThrusterSpeed, text="Forward Thruster 1:",font="Times")
-        lblThrusterSpeed2 = Label(groupThrusterSpeed, text="Forward Thruster 2:",font="Times")
-        lblThrusterSpeed3 = Label(groupThrusterSpeed, text="Depth Thruster 1",font="Times")
-        lblThrusterSpeed4 = Label(groupThrusterSpeed, text="Depth Thruster 2",font="Times")
-        lblThrusterSpeed5 = Label(groupThrusterSpeed, text="Depth Thruster 3",font="Times")
-        lblThrusterSpeed6 = Label(groupThrusterSpeed, text="Depth Thruster 4",font="Times")
-        lblThrusterSpeed7 = Label(groupThrusterSpeed, text="Direction Thruster 1",font="Times")
-        lblThrusterSpeed8 = Label(groupThrusterSpeed, text="Direction Thruster 2",font="Times")
+        lblThrusterSpeed1 = Label(groupThrusterSpeed, text="Forward Thruster 1:",font="Helvetica 13")
+        lblThrusterSpeed2 = Label(groupThrusterSpeed, text="Forward Thruster 2:",font="Helvetica 13")
+        lblThrusterSpeed3 = Label(groupThrusterSpeed, text="Depth Thruster 1",font="Helvetica 13")
+        lblThrusterSpeed4 = Label(groupThrusterSpeed, text="Depth Thruster 2",font="Helvetica 13")
+        lblThrusterSpeed5 = Label(groupThrusterSpeed, text="Depth Thruster 3",font="Helvetica 13")
+        lblThrusterSpeed6 = Label(groupThrusterSpeed, text="Depth Thruster 4",font="Helvetica 13")
+        lblThrusterSpeed7 = Label(groupThrusterSpeed, text="Direction Thruster 1",font="Helvetica 13")
+        lblThrusterSpeed8 = Label(groupThrusterSpeed, text="Direction Thruster 2",font="Helvetica 13")
 	    # declare and initialize variables
 
         self.vThrusterSpeed1 = StringVar()
@@ -48,14 +48,14 @@ class thrusterUI:
         self.vThrusterSpeed8.set("Direction 2")
 
 	    # associate variables with labels displaying data
-        self.entThrusterSpeed1Data = Entry(groupThrusterSpeed, textvariable=self.vThrusterSpeed1, background="blue",font="Times")
-        self.entThrusterSpeed2Data = Entry(groupThrusterSpeed, textvariable=self.vThrusterSpeed2, background="blue",font="Times")
-        self.entThrusterSpeed3Data = Entry(groupThrusterSpeed, textvariable=self.vThrusterSpeed3, background="blue",font="Times")
-        self.entThrusterSpeed4Data = Entry(groupThrusterSpeed, textvariable=self.vThrusterSpeed4, background="blue",font="Times")
-        self.entThrusterSpeed5Data = Entry(groupThrusterSpeed, textvariable=self.vThrusterSpeed5, background="blue",font="Times")
-        self.entThrusterSpeed6Data = Entry(groupThrusterSpeed, textvariable=self.vThrusterSpeed6, background="blue",font="Times")
-        self.entThrusterSpeed7Data = Entry(groupThrusterSpeed, textvariable=self.vThrusterSpeed7, background="blue",font="Times")
-        self.entThrusterSpeed8Data = Entry(groupThrusterSpeed, textvariable=self.vThrusterSpeed8, background="blue",font="Times")
+        self.entThrusterSpeed1Data = Entry(groupThrusterSpeed, textvariable=self.vThrusterSpeed1, background="white",font="Helvetica")
+        self.entThrusterSpeed2Data = Entry(groupThrusterSpeed, textvariable=self.vThrusterSpeed2, background="white",font="Helvetica")
+        self.entThrusterSpeed3Data = Entry(groupThrusterSpeed, textvariable=self.vThrusterSpeed3, background="white",font="Helvetica")
+        self.entThrusterSpeed4Data = Entry(groupThrusterSpeed, textvariable=self.vThrusterSpeed4, background="white",font="Helvetica")
+        self.entThrusterSpeed5Data = Entry(groupThrusterSpeed, textvariable=self.vThrusterSpeed5, background="white",font="Helvetica")
+        self.entThrusterSpeed6Data = Entry(groupThrusterSpeed, textvariable=self.vThrusterSpeed6, background="white",font="Helvetica")
+        self.entThrusterSpeed7Data = Entry(groupThrusterSpeed, textvariable=self.vThrusterSpeed7, background="white",font="Helvetica")
+        self.entThrusterSpeed8Data = Entry(groupThrusterSpeed, textvariable=self.vThrusterSpeed8, background="white",font="Helvetica")
 	    # layout widgets within group
         lblThrusterSpeed1.grid(row=0,sticky=W,padx=5,pady=5)
         lblThrusterSpeed2.grid(row=1,sticky=W,padx=5,pady=5)

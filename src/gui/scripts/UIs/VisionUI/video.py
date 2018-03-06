@@ -31,9 +31,9 @@ class video:
         self.bridge = CvBridge()
         frame = Frame(frameVideo, bg='white')
         frame.grid(row=self.row, column=self.column, sticky=W, padx=15, pady=15)
-        self.labelFrame = LabelFrame(frame, text=name, font="Times")
+        self.labelFrame = LabelFrame(frame, text=name, font="Helvetica 15 bold")
         self.panel = None
-        snapButton = Button(self.labelFrame, text="Snapshot!", command = self.takeSnapshot).grid(column=column+1)
+        snapButton = Button(self.labelFrame, text="Snapshot!",font="Helvetica",command = self.takeSnapshot).grid(column=column+1)
         self.labelFrame.pack()
 
     def image_cb(self, data):

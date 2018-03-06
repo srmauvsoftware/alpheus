@@ -18,13 +18,13 @@ class orientationUI:
         frameOrientation = Frame(frameTele , bg='white')
         frameOrientation.grid(row=1, column=0,sticky=W,padx=15,pady=15)
         # grouping of widgets
-        groupOrientation = LabelFrame(frameOrientation, text="Orientation",font="Times")
+        groupOrientation = LabelFrame(frameOrientation, text="ORIENTATION",font="Helvetica 15 bold")
         groupOrientation.pack()
 	    # widget definitions
-        lblX = Label(groupOrientation, text="Degree X:",font="Times")
-        lblY = Label(groupOrientation, text="Degree Y:",font="Times")
-        lblZ = Label(groupOrientation, text="Degree Z:",font="Times")
-        lblW = Label(groupOrientation, text="Degree W:",font="Times")
+        lblX = Label(groupOrientation, text="Degree X:",font="Helvetica 13")
+        lblY = Label(groupOrientation, text="Degree Y:",font="Helvetica 1")
+        lblZ = Label(groupOrientation, text="Degree Z:",font="Helvetica 1")
+        lblW = Label(groupOrientation, text="Degree W:",font="Helvetica 1")
 	    # declare and initialize variables
         self.vX = StringVar()
         self.vX.set("X")
@@ -35,10 +35,10 @@ class orientationUI:
         self.vW = StringVar()
         self.vW.set("W")
 	    # associate variables with labels displaying data
-        self.entXData = Entry(groupOrientation, textvariable=self.vX, background="blue",font="Times")
-        self.entYData = Entry(groupOrientation, textvariable=self.vY, background="blue",font="Times")
-        self.entZData = Entry(groupOrientation, textvariable=self.vZ, background="blue",font="Times")
-        self.entWData = Entry(groupOrientation, textvariable=self.vW, background="blue",font="Times")
+        self.entXData = Entry(groupOrientation, textvariable=self.vX, background="white",font="Helvetica")
+        self.entYData = Entry(groupOrientation, textvariable=self.vY, background="white",font="Helvetica")
+        self.entZData = Entry(groupOrientation, textvariable=self.vZ, background="white",font="Helvetica")
+        self.entWData = Entry(groupOrientation, textvariable=self.vW, background="white",font="Helvetica")
 	    # layout widgets within group
         lblX.grid(row=0,sticky=W,padx=5,pady=5)
         lblY.grid(row=1,sticky=W,padx=5,pady=5)
