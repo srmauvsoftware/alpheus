@@ -22,9 +22,9 @@ class orientationUI:
         groupOrientation.pack()
 	    # widget definitions
         lblX = Label(groupOrientation, text="Degree X:",font="Helvetica 13")
-        lblY = Label(groupOrientation, text="Degree Y:",font="Helvetica 1")
-        lblZ = Label(groupOrientation, text="Degree Z:",font="Helvetica 1")
-        lblW = Label(groupOrientation, text="Degree W:",font="Helvetica 1")
+        lblY = Label(groupOrientation, text="Degree Y:",font="Helvetica 13")
+        lblZ = Label(groupOrientation, text="Degree Z:",font="Helvetica 13")
+        lblW = Label(groupOrientation, text="Degree W:",font="Helvetica 13")
 	    # declare and initialize variables
         self.vX = StringVar()
         self.vX.set("X")
