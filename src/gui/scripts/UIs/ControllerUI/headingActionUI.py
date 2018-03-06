@@ -18,7 +18,7 @@ class headingActionUI:
         f = Frame(frameControl, bg='white')
         f.grid(row=0, column=1, sticky=N, padx = 15, pady = 15)
         g = LabelFrame(f, text="HEADING ACTION", font="Helvetica 15 bold")
-        newDepthLabel = Label(g, text="Enter New Heading", font="Helvetica 13 bold")
+        newDepthLabel = Label(g, text="Enter New Heading", font="Helvetica 13")
         self.newDepthInput= Entry(g)
         newDepthButton = Button(g, text = "GO", font="Times", command = self.goDepth, width = 1)
         newDepthLabel.grid(row=1)
