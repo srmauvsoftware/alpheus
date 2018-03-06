@@ -64,7 +64,6 @@ void getPressurePID(const alpheus_msgs::pressurePID &pressurePIDdata){
   pKp = pressurePIDdata.pKp;
   pKi = pressurePIDdata.pKi;
   pKd = pressurePIDdata.pKd;
-  ROS_INFO("BLAAAAAAAH%f",pKp);
 }
 // End of Subscriber Callback Functions
 
@@ -117,7 +116,7 @@ int main(int argc, char **argv){
     PressureController();
     thrusterPub.publish(thruster);
     ROS_INFO("Thruster Information Published From Controller");
-    ros::spin();
+    ros::spinOnce();
     r.sleep();
   }
   return 0;

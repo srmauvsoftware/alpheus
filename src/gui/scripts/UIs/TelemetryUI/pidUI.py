@@ -15,10 +15,11 @@ import threading
 
 class pidUI:
     def __init__(self, container, row, col):
-	        
-	rospy.Subscriber('/pressurePID', pressurePID, self.pressure_cb)
-        rospy.Subscriber('/headingPID', headingPID, self.heading_cb)
-	
+
+        if row == 1 and col == 3:
+            rospy.Subscriber('/pressurePIDdata', pressurePID, self.pressure_cb)
+            rospy.Subscriber('/headingPIDdata', headingPID, self.heading_cb)
+
         #Orientation
         frameOrientation = Frame(container , bg='white')
         frameOrientation.grid(row=row, column=col, sticky=W, padx=15, pady=15)
@@ -50,9 +51,9 @@ class pidUI:
         self.entXData = Entry(groupOrientation, textvariable=self.vX, background="white",font="Helvetica")
         self.entYData = Entry(groupOrientation, textvariable=self.vY, background="white",font="Helvetica")
         self.entZData = Entry(groupOrientation, textvariable=self.vZ, background="white",font="Helvetica")
-        self.enthXData = Entry(groupOrientation, textvariable=self.vX, background="white",font="Helvetica")
-        self.enthYData = Entry(groupOrientation, textvariable=self.vY, background="white",font="Helvetica")
-        self.enthZData = Entry(groupOrientation, textvariable=self.vZ, background="white",font="Helvetica")
+        self.enthXData = Entry(groupOrientation, textvariable=self.vhX, background="white",font="Helvetica")
+        self.enthYData = Entry(groupOrientation, textvariable=self.vhY, background="white",font="Helvetica")
+        self.enthZData = Entry(groupOrientation, textvariable=self.vhZ, background="white",font="Helvetica")
 	    # layout widgets within group
         lblX.grid(row=0,sticky=W,padx=5,pady=5)
         lblY.grid(row=1,sticky=W,padx=5,pady=5)
@@ -67,34 +68,32 @@ class pidUI:
         self.enthYData.grid(row=4,column=1)
         self.enthZData.grid(row=5,column=1)
 
-	snapButton = Button(groupOrientation, text="Publish!", command = self.publishPID).grid()
+        if row == 1 and col == 0:
+            snapButton = Button(groupOrientation, text="Update PID", command = self.publishPID).grid()
 
     def pressure_cb(self, data):
-        self.vX.set(str(data.pkp))
-        self.vY.set(str(data.pki))
-        self.vZ.set(str(data.pkd))
+        self.vX.set(str(data.pKp))
+        self.vY.set(str(data.pKi))
+        self.vZ.set(str(data.pKd))
 
     def heading_cb(self, data):
-        self.vhX.set(str(data.hkp))
-        self.vhY.set(str(data.hki))
-        self.vhZ.set(str(data.hkd))
+        self.vhX.set(str(data.hKp))
+        self.vhY.set(str(data.hKi))
+        self.vhZ.set(str(data.hKd))
 
     def publishPID(self):
-	self.Ppublisher = rospy.Publisher("/pressurePIDdata", pressurePID , queue_size=2)
-	self.Hpublisher = rospy.Publisher("/headingPIDdata", headingPID , queue_size=2)
-	t1 = threading.Thread(target=self.publishPIDdata);
-        t1.start()
-    
-    def publishPIDdata(self):
-	pmsg = pressurePID()
-	pmsg.pKp = float(self.vX.get()) 
-	pmsg.pKi = float(self.vY.get())
-	pmsg.pKd = float(self.vZ.get())	
-	
-	hmsg = headingPID()
-	hmsg.hKp = float(self.vhX.get()) 
-	hmsg.hKi = float(self.vhY.get())
-	hmsg.hKd = float(self.vhZ.get())	
-	
-	self.Ppublisher.publish(pmsg)
-	self.Hpublisher.publish(hmsg)
+        self.Ppublisher = rospy.Publisher("/pressurePIDdata", pressurePID, queue_size=2)
+        self.Hpublisher = rospy.Publisher("/headingPIDdata", headingPID, queue_size=2)
+
+        pmsg = pressurePID()
+        pmsg.pKp = float(self.vX.get())
+        pmsg.pKi = float(self.vY.get())
+        pmsg.pKd = float(self.vZ.get())
+
+        hmsg = headingPID()
+        hmsg.hKp = float(self.vhX.get())
+        hmsg.hKi = float(self.vhY.get())
+        hmsg.hKd = float(self.vhZ.get())
+
+        self.Ppublisher.publish(pmsg)
+        self.Hpublisher.publish(hmsg)
