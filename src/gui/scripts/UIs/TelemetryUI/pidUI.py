@@ -11,14 +11,17 @@ except ImportError:
 import rospy
 from alpheus_msgs.msg import pressurePID
 from alpheus_msgs.msg import headingPID
+import threading
 
 class pidUI:
-    def __init__(self, frameTele):
-        rospy.Subscriber('/pressurePID', pressurePID, self.pressure_cb)
+    def __init__(self, container, row, col):
+	        
+	rospy.Subscriber('/pressurePID', pressurePID, self.pressure_cb)
         rospy.Subscriber('/headingPID', headingPID, self.heading_cb)
+	
         #Orientation
-        frameOrientation = Frame(frameTele , bg='white')
-        frameOrientation.grid(row=1, column=3, sticky=W, padx=15, pady=15)
+        frameOrientation = Frame(container , bg='white')
+        frameOrientation.grid(row=row, column=col, sticky=W, padx=15, pady=15)
         # grouping of widgets
         groupOrientation = LabelFrame(frameOrientation, text="PID",font="Times")
         groupOrientation.pack()
@@ -64,6 +67,8 @@ class pidUI:
         self.enthYData.grid(row=4,column=1)
         self.enthZData.grid(row=5,column=1)
 
+	snapButton = Button(groupOrientation, text="Publish!", command = self.publishPID).grid(column=col+1)
+
     def pressure_cb(self, data):
         self.vX.set(str(data.pkp))
         self.vY.set(str(data.pki))
@@ -73,3 +78,23 @@ class pidUI:
         self.vhX.set(str(data.hkp))
         self.vhY.set(str(data.hki))
         self.vhZ.set(str(data.hkd))
+
+    def publishPID(self):
+	self.Ppublisher = rospy.Publisher("/pressurePIDdata", pressurePID , queue_size=2)
+	self.Hpublisher = rospy.Publisher("/headingPIDdata", headingPID , queue_size=2)
+	t1 = threading.Thread(target=self.publishPIDdata);
+        t1.start()
+    
+    def publishPIDdata(self):
+	pmsg = pressurePID()
+	pmsg.pKp = float(self.vX.get()) 
+	pmsg.pKi = float(self.vY.get())
+	pmsg.pKd = float(self.vZ.get())	
+	
+	hmsg = headingPID()
+	hmsg.hKp = float(self.vhX.get()) 
+	hmsg.hKi = float(self.vhY.get())
+	hmsg.hKd = float(self.vhZ.get())	
+	
+	self.Ppublisher.publish(pmsg)
+	self.Hpublisher.publish(hmsg)

@@ -64,6 +64,7 @@ void getPressurePID(const alpheus_msgs::pressurePID &pressurePIDdata){
   pKp = pressurePIDdata.pKp;
   pKi = pressurePIDdata.pKi;
   pKd = pressurePIDdata.pKd;
+  ROS_INFO("BLAAAAAAAH%f",pKp);
 }
 // End of Subscriber Callback Functions
 
@@ -81,10 +82,10 @@ void HeadingController(){
 void PressureController(){
   ros::Time t = ros::Time::now();
   double dt = (t.nsec - t_old.nsec) / 100000000;
-  PID pid = PID(dt, MAX_PRESSURE_PID, MIN_PRESSURE_PID, 4, 0.0005, 1);
+  PID pid = PID(dt, MAX_PRESSURE_PID, MIN_PRESSURE_PID, pKp, pKi, pKd);
   double output = pid.calculate(pressure_setpoint, pressure_value);
   int tVal = map(output, MIN_PRESSURE_PID, MAX_PRESSURE_PID, T200MIN, T200MAX);
-  ROS_INFO("pressure_setpoint is %f\n offsetY is %f\n output is %f\n tVal is %d",pressure_setpoint,offsetY,output,tVal);
+  ROS_INFO("tVal is %d\n output is %f",tVal,output);
   thruster.speedup1 = 1500 - tVal;
   thruster.speedup2 = 1500 - tVal;
   thruster.speedup3 = 1500 - tVal;
@@ -116,7 +117,7 @@ int main(int argc, char **argv){
     PressureController();
     thrusterPub.publish(thruster);
     ROS_INFO("Thruster Information Published From Controller");
-    ros::spinOnce();
+    ros::spin();
     r.sleep();
   }
   return 0;
