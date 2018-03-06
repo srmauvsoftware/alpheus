@@ -74,6 +74,7 @@ void HeadingController(){
   PID pid = PID(dt, MAX_HEADING_PID, MIN_HEADING_PID, hKp, hKi, hKd);
   double output = pid.calculate(heading_setpoint, heading_value);
   int tVal = map(output, MIN_HEADING_PID, MAX_HEADING_PID, T200MIN, T200MAX);
+  //ROS_INFO("HeadingPID is %f,%f,%f",hKp, hKi, hKd);
   thruster.speeddir1 = 1500 - tVal;
   thruster.speeddir2 = 1500 - tVal;
 }
@@ -84,7 +85,7 @@ void PressureController(){
   PID pid = PID(dt, MAX_PRESSURE_PID, MIN_PRESSURE_PID, pKp, pKi, pKd);
   double output = pid.calculate(pressure_setpoint, pressure_value);
   int tVal = map(output, MIN_PRESSURE_PID, MAX_PRESSURE_PID, T200MIN, T200MAX);
-  ROS_INFO("tVal is %d\n output is %f",tVal,output);
+  //ROS_INFO("PressurePID is %f,%f,%f", pKp, pKi, pKd);
   thruster.speedup1 = 1500 - tVal;
   thruster.speedup2 = 1500 - tVal;
   thruster.speedup3 = 1500 - tVal;
