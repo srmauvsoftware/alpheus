@@ -11,7 +11,6 @@ find_package(catkin REQUIRED COMPONENTS
   alpheus_msgs
   rospy
   std_msgs
-  dynamic_reconfigure
 )
 
 ## System dependencies are found with CMake's conventions
@@ -89,9 +88,9 @@ find_package(OpenCV)
 ##     and list every .cfg file to be processed
 
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
- generate_dynamic_reconfigure_options(
-   cfg/hsv.cfg
- )
+## generate_dynamic_reconfigure_options(
+##   cfg/hsv.cfg
+## )
 
 ###################################
 ## catkin specific configuration ##
@@ -104,7 +103,7 @@ find_package(OpenCV)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   LIBRARIES vision
-  CATKIN_DEPENDS alpheus_msgs rospy std_msgs dynamic_reconfigure
+  CATKIN_DEPENDS alpheus_msgs rospy std_msgs
   DEPENDS system_lib
 )
 

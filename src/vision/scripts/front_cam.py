@@ -8,8 +8,6 @@ from std_msgs.msg import String
 from sensor_msgs.msg import Image, CompressedImage
 from alpheus_msgs.msg import *
 from cv_bridge import CvBridge, CvBridgeError
-from dynamic_reconfigure.server import Server
-from vision.cfg import hsvConfig
 import rostopic
 
 class Gate:
@@ -22,7 +20,8 @@ class Gate:
         elif self.img_type[0] == 'sensor_msgs/Image':
             self.imageSub = rospy.Subscriber("/alpheus_cam/front/image_raw", Image, self.img_cb)
 
-        srv = Server(hsvConfig, self.dyn_cb)
+        self.hsvSub = rospy.Subscriber("/hsv",hsv,self.hsvCallback)
+
         self.bridge = CvBridge()
         self.offsetData = offsetData()
         self.imagePub = rospy.Publisher("/front/gate", CompressedImage , queue_size=2)
@@ -44,25 +43,25 @@ class Gate:
         self.g_smax = 0
         self.g_vmax = 0
 
-    def dyn_cb(self, config, level):
-        rospy.loginfo("Dynamic Reconfigure Started For HSV Values")
-        self.rgb = config["rgb"]
-        if(self.rgb == 1):
-            self.r_hmin = config["h_min"]
-            self.r_smin = config["s_min"]
-            self.r_vmin = config["v_min"]
-            self.r_hmax = config["h_max"]
-            self.r_smax = config["s_max"]
-            self.r_vmax = config["v_max"]
+    def hsvCallback(self,data):
+        
+        rospy.loginfo("HSV data being subscribed: Hmin: " + str(data.hmin))
+        
+        if(data.color == 1):
+            self.r_hmin = data.hmin
+            self.r_smin = data.smin
+            self.r_vmin = data.vmin
+            self.r_hmax = data.hmax
+            self.r_smax = data.smax
+            self.r_vmax = data.vmax
 
-        if(self.rgb == 2):
-            self.g_hmin = config["h_min"]
-            self.g_smin = config["s_min"]
-            self.g_vmin = config["v_min"]
-            self.g_hmax = config["h_max"]
-            self.g_smax = config["s_max"]
-            self.g_vmax = config["v_max"]
-        return config
+        if(data.color == 2):
+            self.g_hmin = data.hmin
+            self.g_smin = data.smin
+            self.g_vmin = data.vmin
+            self.g_hmax = data.hmax
+            self.g_smax = data.smax
+            self.g_vmax = data.vmax
 
     def filter_image(self, cv_image):
         channels = cv2.split(cv_image)

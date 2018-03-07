@@ -42,13 +42,13 @@ class gui:
         pidUI(frameControl,1,0)
         headingActionUI(frameControl)
 
-        #frameVideoFront = ttk.Frame(nb)
-        #nb.add(frameVideoFront, text="Front Camera")
-        #frontCamUI(frameVideoFront)
+        frameVideoFront = ttk.Frame(nb)
+        nb.add(frameVideoFront, text="Front Camera")
+        frontCamUI(frameVideoFront)
 
-        #frameVideoBottom = ttk.Frame(nb)
-        #nb.add(frameVideoBottom, text="Bottom Camera")
-        #bottomCamUI(frameVideoBottom)
+        frameVideoBottom = ttk.Frame(nb)
+        nb.add(frameVideoBottom, text="Bottom Camera")
+        bottomCamUI(frameVideoBottom)
 
         '''
 

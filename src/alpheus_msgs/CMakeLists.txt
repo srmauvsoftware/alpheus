@@ -55,6 +55,7 @@ add_message_files(
     offsetData.msg
     headingPID.msg
     pressurePID.msg
+    hsv.msg
 )
 
 ## Generate services in the 'srv' folder

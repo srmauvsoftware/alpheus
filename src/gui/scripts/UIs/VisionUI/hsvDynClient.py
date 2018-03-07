@@ -10,9 +10,10 @@ except ImportError:
 
 import rospy
 from video import video
-import dynamic_reconfigure.client
 import threading
 import time
+from alpheus_msgs.msg import hsv
+import numpy as np
 
 
 class hsvDynClient:
@@ -44,21 +45,21 @@ class hsvDynClient:
         self.vmax = Scale(self.labelFrame, from_=0, to=255, orient=HORIZONTAL)
         self.vmax.grid(row=7, column=1)
         self.labelFrame.pack()
-        t = threading.Thread(target=self.dynServer)
+        
+        self.hsvPublisher = rospy.Publisher("/hsv",hsv,queue_size=500)
+        
+        t = threading.Thread(target=self.hsvPub)
         t.start()
 
-    def dynServer(self):
-        def callback(config):
-            return config
-        client = dynamic_reconfigure.client.Client("FrontCamVision", timeout=30, config_callback=callback)
+    def hsvPub(self):
         while True: # Replace with while Tkinter Loop is running
-            time.sleep(1)
-            client.update_configuration({
-                "rgb": self.v.get(),
-                "h_min": self.hmin.get(),
-                "s_min": self.smin.get(),
-                "v_min": self.vmin.get(),
-                "h_max": self.hmax.get(),
-                "s_max": self.smax.get(),
-                "v_max": self.vmax.get()
-            })
+            hsvmsg = hsv()
+            hsvmsg.color = int(self.v.get())
+            hsvmsg.hmax = np.uint8(self.hmax.get())
+            hsvmsg.smax = np.uint8(self.smax.get())
+            hsvmsg.vmax = np.uint8(self.vmax.get())
+            hsvmsg.hmin = np.uint8(self.hmin.get())
+            hsvmsg.smin = np.uint8(self.smin.get())
+            hsvmsg.vmin = np.uint8(self.vmin.get())
+
+            self.hsvPublisher.publish(hsvmsg)
