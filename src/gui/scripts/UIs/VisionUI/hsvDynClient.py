@@ -54,7 +54,7 @@ class hsvDynClient:
     def hsvPub(self):
         while True: # Replace with while Tkinter Loop is running
             hsvmsg = hsv()
-            hsvmsg.color = int(self.v.get())
+            hsvmsg.color = np.uint8(self.v.get())
             hsvmsg.hmax = np.uint8(self.hmax.get())
             hsvmsg.smax = np.uint8(self.smax.get())
             hsvmsg.vmax = np.uint8(self.vmax.get())

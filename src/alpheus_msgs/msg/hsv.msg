@@ -1,4 +1,4 @@
-int32 color
+uint8 color
 uint8 hmax
 uint8 smax
 uint8 vmax
