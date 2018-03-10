@@ -20,14 +20,14 @@ class thrusterUI:
         groupThrusterSpeed = LabelFrame(frameThrusterSpeed, text="Thruster PWM" ,font="Helvetica 15 bold")
         groupThrusterSpeed.pack()
 	    # widget definitions
-        lblThrusterSpeed1 = Label(groupThrusterSpeed, text="Forward Thruster 1:",font="Helvetica 13")
-        lblThrusterSpeed2 = Label(groupThrusterSpeed, text="Forward Thruster 2:",font="Helvetica 13")
-        lblThrusterSpeed3 = Label(groupThrusterSpeed, text="Depth Thruster 1",font="Helvetica 13")
-        lblThrusterSpeed4 = Label(groupThrusterSpeed, text="Depth Thruster 2",font="Helvetica 13")
-        lblThrusterSpeed5 = Label(groupThrusterSpeed, text="Depth Thruster 3",font="Helvetica 13")
-        lblThrusterSpeed6 = Label(groupThrusterSpeed, text="Depth Thruster 4",font="Helvetica 13")
-        lblThrusterSpeed7 = Label(groupThrusterSpeed, text="Direction Thruster 1",font="Helvetica 13")
-        lblThrusterSpeed8 = Label(groupThrusterSpeed, text="Direction Thruster 2",font="Helvetica 13")
+        lblThrusterSpeed1 = Label(groupThrusterSpeed, text="Forward 1:",font="Helvetica 13")
+        lblThrusterSpeed2 = Label(groupThrusterSpeed, text="Forward 2:",font="Helvetica 13")
+        lblThrusterSpeed3 = Label(groupThrusterSpeed, text="Depth 1",font="Helvetica 13")
+        lblThrusterSpeed4 = Label(groupThrusterSpeed, text="Depth 2",font="Helvetica 13")
+        lblThrusterSpeed5 = Label(groupThrusterSpeed, text="Depth 3",font="Helvetica 13")
+        lblThrusterSpeed6 = Label(groupThrusterSpeed, text="Depth 4",font="Helvetica 13")
+        lblThrusterSpeed7 = Label(groupThrusterSpeed, text="Direction 1",font="Helvetica 13")
+        lblThrusterSpeed8 = Label(groupThrusterSpeed, text="Direction 2",font="Helvetica 13")
 	    # declare and initialize variables
 
         self.vThrusterSpeed1 = StringVar()

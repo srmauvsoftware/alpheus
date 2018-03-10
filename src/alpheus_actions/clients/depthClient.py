@@ -8,7 +8,7 @@ def depthClient():
     client = actionlib.SimpleActionClient('depthServer', \
     alpheus_actions.msg.depthAction)
     client.wait_for_server()
-    goal = alpheus_actions.msg.depthGoal(depth_setpoint=520)
+    goal = alpheus_actions.msg.depthGoal(depth_setpoint=100)
     client.send_goal(goal)
     client.wait_for_result()
     return client.get_result()

@@ -33,8 +33,9 @@ class gui:
         orientationUI(frameTele)
         angularVelocityUI(frameTele)
         linearAccelerationUI(frameTele)
-        pidUI(frameTele,1,3)
-        pressureUI(frameTele, master)
+        pidUI(frameTele,2,1)
+        pidUI(frameTele,2,2)
+        #pressureUI(frameTele, master)
 
         frameControl = ttk.Frame(nb)
         nb.add(frameControl,text="Controller")

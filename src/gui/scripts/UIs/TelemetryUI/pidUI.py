@@ -69,7 +69,7 @@ class pidUI:
         self.enthZData.grid(row=5,column=1)
 
         if row == 1 and col == 0:
-            snapButton = Button(groupOrientation, text="Update PID", command = self.publishPID).grid()
+            snapButton = Button(groupOrientation, text="Update PID", command = self.publishPID).grid(row=6,column=1)
 
     def pressure_cb(self, data):
         self.vX.set(str(data.pKp))
