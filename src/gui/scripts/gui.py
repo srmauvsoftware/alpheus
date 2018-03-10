@@ -33,14 +33,14 @@ class gui:
         orientationUI(frameTele)
         angularVelocityUI(frameTele)
         linearAccelerationUI(frameTele)
-        pidUI(frameTele,2,1)
-        pidUI(frameTele,2,2)
-        #pressureUI(frameTele, master)
+        pidUI(frameTele,2,1, loc="frameTele")
+        pidUI(frameTele,2,2, loc="frameTele")
+        pressureUI(frameTele, master)
 
         frameControl = ttk.Frame(nb)
         nb.add(frameControl,text="Controller")
         depthActionUI(frameControl)
-        pidUI(frameControl,1,0)
+        pidUI(frameControl,1,0, loc="frameControl")
         headingActionUI(frameControl)
 
         frameVideoFront = ttk.Frame(nb)
@@ -50,51 +50,6 @@ class gui:
         frameVideoBottom = ttk.Frame(nb)
         nb.add(frameVideoBottom, text="Bottom Camera")
         bottomCamUI(frameVideoBottom)
-
-        '''
-
-
-        frameAtt1 = Frame(frameControl, bg='white')
-        frameAtt1.grid(row=0, column=0,sticky=N,padx=15,pady=15)
-
-        frameAtt2 = Frame(frameControl, bg='white')
-        frameAtt2.grid(row=0, column=1,sticky=N,padx=15,pady=15)
-        groupAtt2 = LabelFrame(frameAtt2, text="Goal", font=self.customFont)
-        bstartgoal= Button(groupAtt2,text= "Start Goal",background='blue')
-        bendgoal = Button(groupAtt2, text="End Goal",background='blue')
-
-        bdisablepid = Button(groupAtt2, text="Disable Pid", background='blue')
-        bstartgoal.grid(row=1,sticky=W,padx=5,pady=5)
-        bendgoal.grid(row=2,sticky=W,padx=5,pady=5)
-        bdisablepid.grid(row=3,sticky=W,padx=5,pady=5)
-        groupAtt2.pack()
-
-        frameAtt3 =Frame(frameControl,bg='white')
-        frameAtt3.grid(row=0,column=2,sticky=N,padx=15,pady=15)
-        groupAtt3 = LabelFrame(frameAtt3,text="action",font=self.customFont)
-        bhover= Button(groupAtt3,text="Hover",background='blue')
-        bsurface= Button(groupAtt3,text="Surface",background='blue')
-        bhomebase=Button(groupAtt3,text="Home base",background='blue')
-        bhover.grid(row=1,sticky=W,padx=5,pady=5)
-        bsurface.grid(row=2,sticky=W,padx=5,pady=5)
-        bhomebase.grid(row=3,sticky=W,padx=5,pady=5)
-        groupAtt3.pack()
-
-        frameAtt4= Frame(frameControl,bg='white')
-        frameAtt4.grid(row=1,column=0,sticky=W,padx=15,pady=15)
-        groupAtt4 = LabelFrame(frameAtt4,text="Navigation",font=self.customFont)
-        lblxcoordinate = Label(groupAtt4,text="X-Coordinate:", font=self.customFont)
-        lblycoordinate = Label(groupAtt4, text="Y-Coordinate:", font=self.customFont)
-        xinput= Entry(groupAtt4)
-        yinput= Entry(groupAtt4)
-        go=Button(groupAtt4,text="Go",font=self.customFont)
-        lblxcoordinate.grid(row=1)
-        lblycoordinate.grid(row=2)
-        go.grid(row=3)
-        xinput.grid(row=1,column=2)
-        yinput.grid(row=2,column=2)
-        groupAtt4.pack()
-        '''
 
 if __name__ == '__main__':
     rospy.init_node('gui', anonymous=True)

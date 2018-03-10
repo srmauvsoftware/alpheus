@@ -14,9 +14,9 @@ from alpheus_msgs.msg import headingPID
 import threading
 
 class pidUI:
-    def __init__(self, container, row, col):
+    def __init__(self, container, row, col, loc=None):
 
-        if row == 1 and col == 3:
+        if loc == "frameTele":
             rospy.Subscriber('/pressurePIDdata', pressurePID, self.pressure_cb)
             rospy.Subscriber('/headingPIDdata', headingPID, self.heading_cb)
 
@@ -68,7 +68,7 @@ class pidUI:
         self.enthYData.grid(row=4,column=1)
         self.enthZData.grid(row=5,column=1)
 
-        if row == 1 and col == 0:
+        if container == "frameControl":
             snapButton = Button(groupOrientation, text="Update PID", command = self.publishPID).grid(row=6,column=1)
 
     def pressure_cb(self, data):
