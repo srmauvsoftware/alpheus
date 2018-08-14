@@ -1,8 +1,8 @@
-uint16 speedfwd1
-uint16 speedfwd2
-uint16 speedup1
-uint16 speedup2
-uint16 speedup3
-uint16 speedup4
-uint16 speeddir1
-uint16 speeddir2
+uint16 td1
+uint16 td2
+uint16 td3
+uint16 td4
+uint16 tfr
+uint16 tfl
+uint16 trr
+uint16 trl

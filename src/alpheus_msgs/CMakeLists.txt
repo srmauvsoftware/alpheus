@@ -51,10 +51,10 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
     FILES
     thruster.msg
-    pressure.msg
+    depth.msg
     offsetData.msg
     headingPID.msg
-    pressurePID.msg
+    depthPID.msg
     hsv.msg
 )
 
