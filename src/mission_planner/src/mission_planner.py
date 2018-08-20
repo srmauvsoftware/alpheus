@@ -18,7 +18,8 @@ def main():
 
     with sm:
         Sink(sm, 5, 'DEPTH')
-
+	
+	#state detectGate()
         depthTask = Depth(100, 'HEADING')
         depthTask.addDepthAction(sm)
 
