@@ -55,7 +55,6 @@ extern "C" {
 #include "box.h"
 #include "darknet_ros/image_interface.h"
 #include <sys/time.h>
-#include "demo.h"
 }
 
 extern "C" void ipl_into_image(IplImage* src, image im);

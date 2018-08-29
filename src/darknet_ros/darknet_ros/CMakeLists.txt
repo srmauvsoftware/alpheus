@@ -1,18 +1,6 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(darknet_ros)
 
-
-
-target_compile_definitions(my_target PRIVATE 
-GPU=0
-CUDNN=0
-CUDNN_HALF=0
-OPENCV=0
-AVX=0
-OPENMP=0
-)
-
-
 # Set c++11 cmake flags
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
@@ -23,24 +11,27 @@ find_path(DARKNET_PATH
 message("Darknet path dir = ${DARKNET_PATH}")
 add_definitions(-DDARKNET_FILE_PATH="${DARKNET_PATH}")
 
-# Tesla V100
-# ARCH= -gencode arch=compute_70,code=[sm_70,compute_70]
-
-# GTX 1080, GTX 1070, GTX 1060, GTX 1050, GTX 1030, Titan Xp, Tesla P40, Tesla P4
-# ARCH= -gencode arch=compute_61,code=sm_61 -gencode arch=compute_61,code=compute_61
-
-# GP100/Tesla P100  DGX-1
-# ARCH= -gencode arch=compute_60,code=sm_60
-
-# For Jetson TX1, Tegra X1, DRIVE CX, DRIVE PX - uncomment:
-# ARCH= -gencode arch=compute_53,code=[sm_53,compute_53]
-
-# For Jetson Tx2 or Drive-PX2 uncomment:
-# ARCH= -gencode arch=compute_62,code=[sm_62,compute_62]
-
-VPATH=${DARKNET_PATH}/src/
-EXEC=${DARKNET_PATH}/darknet
-OBJDIR=${DARKNET_PATH}/obj/
+# Find CUDA
+FIND_PACKAGE(CUDA)
+if (CUDA_FOUND)
+  find_package(CUDA REQUIRED)
+  message(STATUS "CUDA Version: ${CUDA_VERSION_STRINGS}")
+  message(STATUS "CUDA Libararies: ${CUDA_LIBRARIES}")
+  set(
+    CUDA_NVCC_FLAGS
+    ${CUDA_NVCC_FLAGS};
+    -O3
+    -gencode arch=compute_30,code=sm_30
+    -gencode arch=compute_35,code=sm_35
+    -gencode arch=compute_50,code=[sm_50,compute_50]
+    -gencode arch=compute_52,code=[sm_52,compute_52]
+    -gencode arch=compute_61,code=sm_61
+    -gencode arch=compute_62,code=sm_62
+  )
+  add_definitions(-DGPU)
+else()
+  list(APPEND LIBRARIES "m")
+endif()
 
 # Find X11
 MESSAGE ( STATUS "Searching for X11..." )
@@ -67,6 +58,10 @@ find_package(catkin REQUIRED
     image_transport
 )
 
+# Enable OPENCV in darknet
+add_definitions(-DOPENCV)
+add_definitions(-O4 -g)
+
 catkin_package(
   INCLUDE_DIRS
     include
@@ -92,114 +87,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-ifeq ($(LIBSO), 1)
-LIBNAMESO=darknet.so
-APPNAMESO=uselib
-endif
-
-CC=gcc
-CPP=g++
-NVCC=nvcc 
-OPTS=-Ofast
-LDFLAGS= -lm -pthread 
-COMMON= 
-CFLAGS=-Wall -Wfatal-errors -Wno-unused-result -Wno-unknown-pragmas
-
-ifeq ($(DEBUG), 1) 
-OPTS= -O0 -g
-else
-ifeq ($(AVX), 1) 
-CFLAGS+= -ffp-contract=fast -mavx -mavx2 -msse3 -msse4.1 -msse4.2 -msse4a
-endif
-endif
-
-CFLAGS+=$(OPTS)
-
-ifeq ($(OPENCV), 1) 
-COMMON+= -DOPENCV
-CFLAGS+= -DOPENCV
-LDFLAGS+= `pkg-config --libs opencv` 
-COMMON+= `pkg-config --cflags opencv` 
-endif
-
-ifeq ($(OPENMP), 1)
-CFLAGS+= -fopenmp
-LDFLAGS+= -lgomp
-endif
-
-ifeq ($(GPU), 1)
-COMMON+= -DGPU -I/usr/local/cuda/include/
-CFLAGS+= -DGPU
-ifeq ($(OS),Darwin) #MAC
-LDFLAGS+= -L/usr/local/cuda/lib -lcuda -lcudart -lcublas -lcurand
-else
-LDFLAGS+= -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -lcurand
-endif
-endif
-
-ifeq ($(CUDNN), 1)
-COMMON+= -DCUDNN
-ifeq ($(OS),Darwin) #MAC
-CFLAGS+= -DCUDNN -I/usr/local/cuda/include
-LDFLAGS+= -L/usr/local/cuda/lib -lcudnn
-else
-CFLAGS+= -DCUDNN -I/usr/local/cudnn/include
-LDFLAGS+= -L/usr/local/cudnn/lib64 -lcudnn
-endif
-endif
-
-ifeq ($(CUDNN_HALF), 1)
-COMMON+= -DCUDNN_HALF
-CFLAGS+= -DCUDNN_HALF
-ARCH+= -gencode arch=compute_70,code=[sm_70,compute_70]
-endif
-
-OBJ=http_stream.o gemm.o utils.o cuda.o convolutional_layer.o list.o image.o activations.o im2col.o col2im.o blas.o crop_layer.o dropout_layer.o maxpool_layer.o softmax_layer.o data.o matrix.o network.o connected_layer.o cost_layer.o parser.o option_list.o darknet.o detection_layer.o captcha.o route_layer.o writing.o box.o nightmare.o normalization_layer.o avgpool_layer.o coco.o dice.o yolo.o detector.o layer.o compare.o classifier.o local_layer.o swag.o shortcut_layer.o activation_layer.o rnn_layer.o gru_layer.o rnn.o rnn_vid.o crnn_layer.o demo.o tag.o cifar.o go.o batchnorm_layer.o art.o region_layer.o reorg_layer.o reorg_old_layer.o super.o voxel.o tree.o yolo_layer.o upsample_layer.o
-ifeq ($(GPU), 1) 
-LDFLAGS+= -lstdc++ 
-OBJ+=convolutional_kernels.o activation_kernels.o im2col_kernels.o col2im_kernels.o blas_kernels.o crop_layer_kernels.o dropout_layer_kernels.o maxpool_layer_kernels.o network_kernels.o avgpool_layer_kernels.o
-endif
-
-OBJS = $(addprefix $(OBJDIR), $(OBJ))
-DEPS = $(wildcard ${DARKNET_PATH}/src/*.h) Makefile
-
-all: obj backup results $(EXEC) $(LIBNAMESO) $(APPNAMESO)
-
-ifeq ($(LIBSO), 1) 
-CFLAGS+= -fPIC
-
-$(LIBNAMESO): $(OBJS) ${DARKNET_PATH}/src/yolo_v2_class.hpp ${DARKNET_PATH}/src/yolo_v2_class.cpp
-	$(CPP) -shared -std=c++11 -fvisibility=hidden -DYOLODLL_EXPORTS $(COMMON) $(CFLAGS) $(OBJS) ${DARKNET_PATH}/src/yolo_v2_class.cpp -o $@ $(LDFLAGS)
-	
-$(APPNAMESO): $(LIBNAMESO) ${DARKNET_PATH}/src/yolo_v2_class.hpp ${DARKNET_PATH}/src/yolo_console_dll.cpp
-	$(CPP) -std=c++11 $(COMMON) $(CFLAGS) -o $@ ${DARKNET_PATH}/src/yolo_console_dll.cpp $(LDFLAGS) -L ./ -l:$(LIBNAMESO)
-endif
-
-$(EXEC): $(OBJS)
-	$(CPP) $(COMMON) $(CFLAGS) $^ -o $@ $(LDFLAGS)
-
-$(OBJDIR)%.o: %.c $(DEPS)
-	$(CC) $(COMMON) $(CFLAGS) -c $< -o $@
-
-$(OBJDIR)%.o: %.cpp $(DEPS)
-	$(CPP) $(COMMON) $(CFLAGS) -c $< -o $@
-
-$(OBJDIR)%.o: %.cu $(DEPS)
-	$(NVCC) $(ARCH) $(COMMON) --compiler-options "$(CFLAGS)" -c $< -o $@
-
-obj:
-	mkdir -p ${DARKNET_PATH}/obj
-backup:
-	mkdir -p ${DARKNET_PATH}/backup
-results:
-	mkdir -p ${DARKNET_PATH}/results
-
-.PHONY: clean
-
-clean:
-	rm -rf $(OBJS) $(EXEC) $(LIBNAMESO) $(APPNAMESO)
-
-if (GPU)
+if (CUDA_FOUND)
 
   link_directories(
     /usr/local/cuda/lib64
@@ -208,6 +96,45 @@ if (GPU)
   cuda_add_library(${PROJECT_NAME}_lib
     src/YoloObjectDetector.cpp
     src/image_interface.c
+
+    ${DARKNET_PATH}/src/activation_layer.c        ${DARKNET_PATH}/src/im2col.c
+    ${DARKNET_PATH}/src/activations.c             ${DARKNET_PATH}/src/image.c
+    ${DARKNET_PATH}/src/avgpool_layer.c           ${DARKNET_PATH}/src/layer.c
+    ${DARKNET_PATH}/src/batchnorm_layer.c         ${DARKNET_PATH}/src/list.c
+    ${DARKNET_PATH}/src/blas.c                    ${DARKNET_PATH}/src/local_layer.c
+    ${DARKNET_PATH}/src/box.c                     ${DARKNET_PATH}/src/lstm_layer.c
+    ${DARKNET_PATH}/src/col2im.c                  ${DARKNET_PATH}/src/matrix.c
+    ${DARKNET_PATH}/src/connected_layer.c         ${DARKNET_PATH}/src/maxpool_layer.c
+    ${DARKNET_PATH}/src/convolutional_layer.c     ${DARKNET_PATH}/src/network.c
+    ${DARKNET_PATH}/src/cost_layer.c              ${DARKNET_PATH}/src/normalization_layer.c
+    ${DARKNET_PATH}/src/crnn_layer.c              ${DARKNET_PATH}/src/option_list.c
+    ${DARKNET_PATH}/src/crop_layer.c              ${DARKNET_PATH}/src/parser.c
+    ${DARKNET_PATH}/src/cuda.c                    ${DARKNET_PATH}/src/region_layer.c
+    ${DARKNET_PATH}/src/data.c                    ${DARKNET_PATH}/src/reorg_layer.c
+    ${DARKNET_PATH}/src/deconvolutional_layer.c   ${DARKNET_PATH}/src/rnn_layer.c
+    ${DARKNET_PATH}/src/demo.c                    ${DARKNET_PATH}/src/route_layer.c
+    ${DARKNET_PATH}/src/detection_layer.c         ${DARKNET_PATH}/src/shortcut_layer.c
+    ${DARKNET_PATH}/src/dropout_layer.c           ${DARKNET_PATH}/src/softmax_layer.c
+    ${DARKNET_PATH}/src/gemm.c                    ${DARKNET_PATH}/src/tree.c
+    ${DARKNET_PATH}/src/gru_layer.c               ${DARKNET_PATH}/src/utils.c
+    ${DARKNET_PATH}/src/upsample_layer.c          ${DARKNET_PATH}/src/logistic_layer.c
+    ${DARKNET_PATH}/src/l2norm_layer.c            ${DARKNET_PATH}/src/yolo_layer.c
+
+    ${DARKNET_PATH}/examples/art.c                ${DARKNET_PATH}/examples/lsd.c
+    ${DARKNET_PATH}/examples/attention.c          ${DARKNET_PATH}/examples/nightmare.c
+    ${DARKNET_PATH}/examples/captcha.c            ${DARKNET_PATH}/examples/regressor.c
+    ${DARKNET_PATH}/examples/cifar.c              ${DARKNET_PATH}/examples/rnn.c
+    ${DARKNET_PATH}/examples/classifier.c         ${DARKNET_PATH}/examples/segmenter.c
+    ${DARKNET_PATH}/examples/coco.c               ${DARKNET_PATH}/examples/super.c
+    ${DARKNET_PATH}/examples/darknet.c            ${DARKNET_PATH}/examples/tag.c
+    ${DARKNET_PATH}/examples/detector.c           ${DARKNET_PATH}/examples/yolo.c
+    ${DARKNET_PATH}/examples/go.c
+
+    ${DARKNET_PATH}/src/activation_kernels.cu     ${DARKNET_PATH}/src/crop_layer_kernels.cu
+    ${DARKNET_PATH}/src/avgpool_layer_kernels.cu  ${DARKNET_PATH}/src/deconvolutional_kernels.cu
+    ${DARKNET_PATH}/src/blas_kernels.cu           ${DARKNET_PATH}/src/dropout_layer_kernels.cu
+    ${DARKNET_PATH}/src/col2im_kernels.cu         ${DARKNET_PATH}/src/im2col_kernels.cu
+    ${DARKNET_PATH}/src/convolutional_kernels.cu  ${DARKNET_PATH}/src/maxpool_layer_kernels.cu
   )
 
   target_link_libraries(${PROJECT_NAME}_lib
@@ -233,6 +160,39 @@ else()
   add_library(${PROJECT_NAME}_lib
     src/YoloObjectDetector.cpp
     src/image_interface.c
+
+    ${DARKNET_PATH}/src/activation_layer.c        ${DARKNET_PATH}/src/im2col.c
+    ${DARKNET_PATH}/src/activations.c             ${DARKNET_PATH}/src/image.c
+    ${DARKNET_PATH}/src/avgpool_layer.c           ${DARKNET_PATH}/src/layer.c
+    ${DARKNET_PATH}/src/batchnorm_layer.c         ${DARKNET_PATH}/src/list.c
+    ${DARKNET_PATH}/src/blas.c                    ${DARKNET_PATH}/src/local_layer.c
+    ${DARKNET_PATH}/src/box.c                     ${DARKNET_PATH}/src/lstm_layer.c
+    ${DARKNET_PATH}/src/col2im.c                  ${DARKNET_PATH}/src/matrix.c
+    ${DARKNET_PATH}/src/connected_layer.c         ${DARKNET_PATH}/src/maxpool_layer.c
+    ${DARKNET_PATH}/src/convolutional_layer.c     ${DARKNET_PATH}/src/network.c
+    ${DARKNET_PATH}/src/cost_layer.c              ${DARKNET_PATH}/src/normalization_layer.c
+    ${DARKNET_PATH}/src/crnn_layer.c              ${DARKNET_PATH}/src/option_list.c
+    ${DARKNET_PATH}/src/crop_layer.c              ${DARKNET_PATH}/src/parser.c
+    ${DARKNET_PATH}/src/cuda.c                    ${DARKNET_PATH}/src/region_layer.c
+    ${DARKNET_PATH}/src/data.c                    ${DARKNET_PATH}/src/reorg_layer.c
+    ${DARKNET_PATH}/src/deconvolutional_layer.c   ${DARKNET_PATH}/src/rnn_layer.c
+    ${DARKNET_PATH}/src/demo.c                    ${DARKNET_PATH}/src/route_layer.c
+    ${DARKNET_PATH}/src/detection_layer.c         ${DARKNET_PATH}/src/shortcut_layer.c
+    ${DARKNET_PATH}/src/dropout_layer.c           ${DARKNET_PATH}/src/softmax_layer.c
+    ${DARKNET_PATH}/src/gemm.c                    ${DARKNET_PATH}/src/tree.c
+    ${DARKNET_PATH}/src/gru_layer.c               ${DARKNET_PATH}/src/utils.c
+    ${DARKNET_PATH}/src/upsample_layer.c          ${DARKNET_PATH}/src/logistic_layer.c
+    ${DARKNET_PATH}/src/l2norm_layer.c            ${DARKNET_PATH}/src/yolo_layer.c
+
+    ${DARKNET_PATH}/examples/art.c                ${DARKNET_PATH}/examples/lsd.c
+    ${DARKNET_PATH}/examples/attention.c          ${DARKNET_PATH}/examples/nightmare.c
+    ${DARKNET_PATH}/examples/captcha.c            ${DARKNET_PATH}/examples/regressor.c
+    ${DARKNET_PATH}/examples/cifar.c              ${DARKNET_PATH}/examples/rnn.c
+    ${DARKNET_PATH}/examples/classifier.c         ${DARKNET_PATH}/examples/segmenter.c
+    ${DARKNET_PATH}/examples/coco.c               ${DARKNET_PATH}/examples/super.c
+    ${DARKNET_PATH}/examples/darknet.c            ${DARKNET_PATH}/examples/tag.c
+    ${DARKNET_PATH}/examples/detector.c           ${DARKNET_PATH}/examples/yolo.c
+    ${DARKNET_PATH}/examples/go.c
   )
 
   target_link_libraries(${PROJECT_NAME}_lib
@@ -274,13 +234,3 @@ install(
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
   FILES_MATCHING PATTERN "*.h"
 )
-
-
-# Download yolov3.weights
-#set(FILE "${PATH}/yolov3.weights")
-#message(STATUS "Checking and downloading yolov3.weights if needed ...")
-#if (NOT EXISTS "${FILE}")
-#  message(STATUS "... file does not exist. Downloading now ...")
-#  execute_process(COMMAND wget http://pjreddie.com/media/files/yolov3.weights -P ${PATH})
-#endif()
-
