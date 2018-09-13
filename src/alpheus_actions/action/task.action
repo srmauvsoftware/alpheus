@@ -1,0 +1,8 @@
+#goal definition
+int32 task_number
+---
+#result definition
+int32 task_result
+---
+#feedback
+int32 task_feedback

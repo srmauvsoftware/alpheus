@@ -4,7 +4,8 @@
 #include "manipulators.h"
 #include <std_msgs/Bool.h>
 #include <std_msgs/Int16.h>
-#include <alpheus_msgs/thruster.h>
+#include <alpheus_msgs/vectorThruster.h>
+//#include <alpheus_msgs/depthThruster.h> not being used
 
 Servo tfr;
 Servo tfl;
@@ -13,7 +14,7 @@ Servo trl;
 
 ros::NodeHandle nh;
 std_msgs::Bool emergency;
-alpheus_msgs::thruster thruster;
+alpheus_msgs::vectorThruster thruster;
 
 //void emergencyCallback(const std_msgs::Bool &msg);
 void torpedoCallback(const std_msgs::Bool &msg);
@@ -21,7 +22,7 @@ void dropperCallback(const std_msgs::Bool &msg);
 void getThrusterPWM(const alpheus_msgs::thruster &msg);
 
 //ros::Subscriber<std_msgs::Bool> emergency_sub("emergency",emergencyCallback);
-ros::Subscriber<alpheus_msgs::thruster>thruster_sub("/thruster", getThrusterPWM);
+ros::Subscriber<alpheus_msgs::vectorThruster>thruster_sub("/vectorThruster", getThrusterPWM);
 ros::Subscriber<std_msgs::Bool> torpedo_sub("torpedo",torpedoCallback);
 ros::Subscriber<std_msgs::Bool> dropper_sub("dropper",dropperCallback);
 
@@ -88,7 +89,7 @@ void runThrusters(){
   trl.write(thruster.trl);
 }
 
-void getThrusterPWM(const alpheus_msgs::thruster &msg){
+void getThrusterPWM(const alpheus_msgs::vectorThruster &msg){
   thruster = msg;
 }
 

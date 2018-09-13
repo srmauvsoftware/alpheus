@@ -1,4 +1,8 @@
 #! /usr/bin/env python
+
+'''
+This receives offsetX from task server and 
+'''
 import rospy
 import actionlib
 import alpheus_actions.msg

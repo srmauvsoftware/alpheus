@@ -19,4 +19,4 @@ if __name__ == '__main__':
         result = depthClient()
         print(result)
     except rospy.ROSInterruptException:
-        print("Program interrupted before completetion", file=sys.stderr)
+        print("Program interrupted before completion", file=sys.stderr)

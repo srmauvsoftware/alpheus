@@ -15,8 +15,8 @@ class Gate:
         self.offsetPub = rospy.Publisher("/offsetData", offsetData, queue_size=2)
         self.erosion = None
         self.dilation = None
-        self.cameraX = 640 / 2
-        self.cameraY = 320 / 2
+        self.cameraX = 416 / 2
+        self.cameraY = 416 / 2
         self.r_hmin = 0
         self.r_smin = 0
         self.r_vmin = 0

@@ -15,7 +15,8 @@ int T200MAX = 400;
 int T200MIN = -400;
 
 ros::Time t_old;
-alpheus_msgs::thruster thruster;
+alpheus_msgs::vectorThruster vectorThruster;
+alpheus_msgs::depthThruster depthThruster;
 ros::Subscriber depthSub;
 ros::Subscriber imuSub;
 ros::Subscriber offsetSub;
@@ -71,10 +72,33 @@ void HeadingController(){
   double output = pid.calculate(heading_setpoint, heading_value);
   int tVal = map(output, MIN_HEADING_PID, MAX_HEADING_PID, T200MIN, T200MAX);
   //ROS_INFO("HeadingPID is %f,%f,%f",hKp, hKi, hKd);
-  thruster.tfr = 1500 - tVal;
-  thruster.tfl = 1500 - tVal;
-  thruster.trr = 1500 - tVal;
-  thruster.trl = 1500 - tVal;
+
+  /*
+  depricated
+
+  vectorThruster.tfr = 1500 - tVal;
+  vectorThruster.tfl = 1500 - tVal;
+  vectorThruster.trr = 1500 - tVal;
+  vectorThruster.trl = 1500 - tVal;
+  */
+
+  //TO GO LEFT/RIGHT
+  vectorThruster.tfr = 1500 + tVal
+  vectorThruster.tfl = 1500 - tVal
+  vectorThruster.trr = 1500 - tVal
+  vectorThruster.trl = 1500 + tVal
+
+  /*TO GO FORWARD/BACKWARD
+    vectorThruster.tfr = 1500 + tVal
+    vectorThruster.tfl = 1500 + tVal
+    vectorThruster.trr = 1500 + tVal
+    vectorThruster.trl = 1500 + tVal
+    TO GO LEFT/RIGHT
+    vectorThruster.tfr = 1500 + tVal
+    vectorThruster.tfl = 1500 - tVal
+    vectorThruster.trr = 1500 - tVal
+    vectorThruster.trl = 1500 + tVal
+  */
 }
 
 void DepthController(){
@@ -84,36 +108,38 @@ void DepthController(){
   double output = pid.calculate(depth_setpoint, depth_value);
   int tVal = map(output, MIN_DEPTH_PID, MAX_DEPTH_PID, T200MIN, T200MAX);
   //ROS_INFO("DepthPID is %f,%f,%f", pKp, pKi, pKd);
-  thruster.td1 = 1500 - tVal;
-  thruster.td2 = 1500 - tVal;
-  thruster.td3 = 1500 - tVal;
-  thruster.td4 = 1500 - tVal;
+  depthThruster.td1 = 1500 - tVal;
+  depthThruster.td2 = 1500 - tVal;
+  depthThruster.td3 = 1500 - tVal;
+  depthThruster.td4 = 1500 - tVal;
 }
 //End of Controller Functions
 
 int main(int argc, char **argv){
   ros::init(argc, argv, "pidcontroller");
   ros::NodeHandle nh;
-  thrusterPub = nh.advertise<alpheus_msgs::thruster>("/thruster",1000);
+  vectorThrusterPub = nh.advertise<alpheus_msgs::vectorThruster>("/vectorThruster",1000);
+  depthThrusterPub = nh.advertise<alpheus_msgs::depthThruster>("/depthThruster",1000);
   imuSub = nh.subscribe("/imu/HeadingTrue_degree", 1000, getHeading);
   depthSub = nh.subscribe("/depth", 1000, getDepth);
   offsetSub = nh.subscribe("/offsetData", 1000, getOffset);
   depthPIDSub = nh.subscribe("/depthPIDdata", 1000, getDepthPID);
   headingPIDSub = nh.subscribe("/headingPIDdata", 1000, getHeadingPID);
-  thruster.td1 = 1500;
-  thruster.td2 = 1500;
-  thruster.td3 = 1500;
-  thruster.td4 = 1500;
-  thruster.tfr = 1500;
-  thruster.tfl = 1500;
-  thruster.trr = 1500;
-  thruster.trl = 1500;
+  depthThruster.td1 = 1500;
+  depthThruster.td2 = 1500;
+  depthThruster.td3 = 1500;
+  depthThruster.td4 = 1500;
+  vectorThruster.tfr = 1500;
+  vectorThruster.tfl = 1500;
+  vectorThruster.trr = 1500;
+  vectorThruster.trl = 1500;
 
   ros::Rate r(2);
   while(ros::ok()){
     HeadingController();
     DepthController();
-    thrusterPub.publish(thruster);
+    vectorThrusterPub.publish(vectorThruster);
+    depthThrusterPub.publish(depthThruster);
     ROS_INFO("Thruster Information Published From Controller");
     ros::spinOnce();
     r.sleep();
