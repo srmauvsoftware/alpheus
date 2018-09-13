@@ -11,12 +11,12 @@ import sys, select, termios, tty, threading
 msg = """
 Alpheus Testing Mode - Reading From Keyboard
 --------------------
-Arrow Key Up ⬆️ - Forward
-Arrow Key Down ⬇️ - Backward
-Arrow Key Right ➡️ - Right
-Arrow Key Left ⬅️ - Left
-Key W 👆🏼 - Depth UP
-Key S 👇🏼 - Depth Down
+Arrow Key Up - Forward
+Arrow Key Down - Backward
+Arrow Key Right - Right
+Arrow Key Left - Left
+Key W - Depth UP
+Key S - Depth Down
 --------------------
 """
 
