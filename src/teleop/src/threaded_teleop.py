@@ -28,61 +28,61 @@ def getKey():
     return key
 
 def depthMovement():
-    key = getKey()
-    dt = depthThruster()
-    if key == 'W':
-        dt.td1 = 1100
-        dt.td2 = 1100
-        dt.td3 = 1100
-        dt.td4 = 1100
-        print("Moving Up")
-    elif key == 'S':
-        dt.td1 = 1900
-        dt.td2 = 1900
-        dt.td3 = 1900
-        dt.td4 = 1900
-        print("Moving Down")
+    while(1):
+        key = getKey()
+        dt = depthThruster()
+        if key == 'W':
+            dt.td1 = 1100
+            dt.td2 = 1100
+            dt.td3 = 1100
+            dt.td4 = 1100
+            print("Moving Up")
+        elif key == 'S':
+            dt.td1 = 1900
+            dt.td2 = 1900
+            dt.td3 = 1900
+            dt.td4 = 1900
+            print("Moving Down")
 
-    elif key == 'Q':
-        print("Quitting")
-        break
+        elif key == 'Q':
+            print("Quitting")
+            break
 
-    depthPub.publish(dt)
+        depthPub.publish(dt)
 
 def vectorMovement():
-    key = getKey()
-    vt = vectorThruster()
-    if key == 'A':
-        vt.tfl = 1900
-        vt.trl = 1900
-        vt.tfr = 1900
-        vt.trr = 1900
-        print("Moving Up")
+    while(1):
+        key = getKey()
+        vt = vectorThruster()
+        if key == 'A':
+            vt.tfl = 1900
+            vt.trl = 1900
+            vt.tfr = 1900
+            vt.trr = 1900
+            print("Moving Up")
 
-    elif key == 'B':
-        vt.tfl = 1100
-        vt.tfr = 1100
-        vt.trl = 1100
-        vt.trr = 1100
-        print("Moving Down")
+        elif key == 'B':
+            vt.tfl = 1100
+            vt.tfr = 1100
+            vt.trl = 1100
+            vt.trr = 1100
+            print("Moving Down")
 
-    elif key == 'D':
-        vt.tfl = 1100
-        vt.tfr = 1900
-        vt.trl = 1900
-        vt.trr = 1100
-        print("Moving left")
-        break
+        elif key == 'D':
+            vt.tfl = 1100
+            vt.tfr = 1900
+            vt.trl = 1900
+            vt.trr = 1100
+            print("Moving left")
 
-    elif key == 'C':
-        vt.tfl = 1900
-        vt.tfr = 1100
-        vt.trl = 1100
-        vt.trr = 1900
-        print("Moving right")
-        break
+        elif key == 'C':
+            vt.tfl = 1900
+            vt.tfr = 1100
+            vt.trl = 1100
+            vt.trr = 1900
+            print("Moving right")
 
-    vectorPub.publish(vt)
+        vectorPub.publish(vt)
 
 if __name__=="__main__":
     print(msg)
@@ -95,9 +95,6 @@ if __name__=="__main__":
         depthThread = threading.Thread(target=depthMovement)
         vectorThread = threading.Thread(target=vectorMovement)
         rospy.init_node('teleop')
-        while (1):
-            depthThread.start()
-            vectorThread.start()
         
     except rospy.ROSInterruptException:
         pass
