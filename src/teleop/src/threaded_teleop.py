@@ -59,14 +59,14 @@ def vectorMovement():
             vt.trl = 1900
             vt.tfr = 1900
             vt.trr = 1900
-            print("Moving Up")
+            print("Moving forward")
 
         elif key == 'B':
             vt.tfl = 1100
             vt.tfr = 1100
             vt.trl = 1100
             vt.trr = 1100
-            print("Moving Down")
+            print("Moving backward")
 
         elif key == 'D':
             vt.tfl = 1100
@@ -95,6 +95,8 @@ if __name__=="__main__":
         depthThread = threading.Thread(target=depthMovement)
         vectorThread = threading.Thread(target=vectorMovement)
         rospy.init_node('teleop')
+	depthThread.start()
+	vectorThread.start()
         
     except rospy.ROSInterruptException:
         pass
