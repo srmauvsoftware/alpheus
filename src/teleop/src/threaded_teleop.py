@@ -3,8 +3,8 @@
 import roslib
 import rospy
 
-from alpheus_msgs import depthThruster
-from alpheus_msgs import vectorThruster
+from alpheus_msgs.msg import depthThruster
+from alpheus_msgs.msg import vectorThruster
 
 import sys, select, termios, tty, threading
 
