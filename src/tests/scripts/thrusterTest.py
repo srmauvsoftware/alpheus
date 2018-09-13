@@ -6,7 +6,6 @@ import threading
 
 def depthTalker():
     pub = rospy.Publisher('/thruster/depth', depthThruster, queue_size=10)
-    rospy.init_node('depth_thruster_test_node', anonymous=True)
     rate = rospy.Rate(10)
     while not rospy.is_shutdown():
         msg = depthThruster()
@@ -19,7 +18,6 @@ def depthTalker():
 
 def vectorTalker():
     pub = rospy.Publisher('/thruster/vector', vectorThruster, queue_size=10)
-    rospy.init_node('vector_thruster_test_node', anonymous=True)
     rate = rospy.Rate(10)
     while not rospy.is_shutdown():
         msg = vectorThruster()
@@ -32,6 +30,7 @@ def vectorTalker():
 
 if __name__ == '__main__':
     try:
+        rospy.init_node('thruster_test_node', anonymous=True)
         dt = threading.Thread(target=depthTalker)
         vt = threading.Thread(target=vectorTalker)
         dt.start()
