@@ -50,7 +50,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 add_message_files(
     FILES
-    thruster.msg
+    depthThruster.msg
+    vectorThruster.msg
     depth.msg
     offsetData.msg
     headingPID.msg
