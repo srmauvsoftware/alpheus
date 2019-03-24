@@ -1,7 +1,7 @@
 <img src="http://teamsrmauv.com/assets/images/auvlogo.png" width=20% align="right">
 
 # Alpheus
-> SRM Autonomous Underwater Vehicle _Alpheus_ code.
+> SRM Autonomous Underwater Vehicle _Alpheuses'_ code.
 
 NOTE: This code has been deprecated and no longer used by the team for AUV development. The latest code can be found [here](https://github.com/srmauvsoftware/srmauv).
 
